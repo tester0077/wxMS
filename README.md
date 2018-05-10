@@ -25,11 +25,11 @@ The accompanying help file gives more details.
 
 4. Appropriate MSVC distributable package
 
-5. RCStamp utility - the executable is included in the main directory 
+5. RCStamp utility - the executable RCStamp.exe is included in the ./Executables directory 
 and is used as part of the 'release' build process to update the 
 major, minor & build numbers. To modify either by more than one increment or to modify them in any other way, it is best to edit the .RC 
 file by hand to change any one or all to the new starting value. But note, all 'copies' of each number in the .RC must be modified in sync.
-It is a command line utility and you can get some help by running it in a DOS window.
+It is a command line utility and you can get some help by running it in a DOS window. You will want to move or copy it to a directory on the PATH so that Windows can find it or you can add the full path in the 'release' build pre-link build event.
 
 6. libcurl - a current version uses libculr 7.59 compiled using the the MSVC IDE command 
 prompt and the batch file shown below, executed in winbuild
@@ -50,16 +50,15 @@ The .sln file is set up to copy the executable, the help file as well as any doc
 8. An useful helper script to control the Microsoft re-distributable files also came originally from CodeProject see: https://www.codeproject.com/Articles/20868/NET-Framework-Installer-for-InnoSetup.
 I beleive the latest code has now moved to Github: https://github.com/stfx/innodependencyinstaller
 
-9. Checksum  Jem Berkes' ver 1.2 MD5sums.exe -- http://www.pc-tools.net/win32/md5sums/
+9. Checksum - Jem Berkes' ver 1.2 MD5sums.exe -- http://www.pc-tools.net/win32/md5sums/
 
-10. UPX see https://upx.github.io/
+10. UPX file compressor - see https://upx.github.io/
 
 11. HelpNDoc - The help files are built using the free version of HelpNDoc from https://www.helpndoc.com/
 If you will be using the application for anything other than personal use, you may have to
 buy a license or use some alternative means to build the help files. Using this application is entirely optional if you want to produce the help files manually or have some other application. You can inspect the .SLN and project files to see how HelpNDoc is integrated to create the help file as part of a build.
 
-12. wxCrafter - The GUI is built using a licensed version of wxCrafter. It is expected that all features used
-by this project are covered by the free version, if not you'd have to use 
+12. wxCrafter - The GUI is built using a licensed version of wxCrafter. It is expected that all features used by this project are covered by the free version, if not you'd have to use 
 a different GUI builder of your choice or modify things by hand.
 
 ## Other Details
@@ -79,5 +78,5 @@ to use as part of wxWidgets obtainedm as per comment in the code:
 (http://codesink.org/mimetic_mime_library.html) and relicenced from the MIT
  licence to the wxWidgets one with authorisation received from Stefano Barbato
  ```
- 
+
 - In the directory ./Executables you will find the utility rcStamp used to increment the application version numbers. A separate Github project is available should you want to recompile it or just inspect the source code. If was adapted from a CodeProject article.
