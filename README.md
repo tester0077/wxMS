@@ -72,7 +72,7 @@ will avoid issues with forgetting to propagate all changes to all sub-projects.
 This file MUST be included in every source and MUST be the first included file.
 
 - The MIME decoding part uses the library mimetic from Stefano Barbato with permission
-to use as part of wxWidgets obtainedm as per comment in the code:
+to use as part of wxWidgets obtained,  as per comment in the code:
 ```Licence:     wxWidgets licence
  This file has been copied from the project Mimetic  
 (http://codesink.org/mimetic_mime_library.html) and relicenced from the MIT
