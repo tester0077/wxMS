@@ -41,7 +41,8 @@ Libcurl is included in the project via the macro `LIBCURL_2015 = D:\pkg\C\curl-m
 :: IPV6 is included as default
 :: for debug
 nmake /f Makefile.vc mode=static VC=14 WITH_DEVEL=../deps WITH_ZLIB=static GEN_PDB=yes DEBUG=yes MACHINE=x86
-nmake /f Makefile.vc mode=static VC=14 WITH_DEVEL=../deps WITH_ZLIB=static GEN_PDB=yes DEBUG=no MACHINE=x86```
+nmake /f Makefile.vc mode=static VC=14 WITH_DEVEL=../deps WITH_ZLIB=static GEN_PDB=yes DEBUG=no MACHINE=x86
+```
 
 7. Inno Installer and support packages.
 The .sln file is set up to copy the executable, the help file as well as any documentation files to the directory ./Inno/src and the resulting executable will be left in ./Inno/bin
@@ -76,6 +77,7 @@ to use as part of wxWidgets obtainedm as per comment in the code:
 ```Licence:     wxWidgets licence
  This file has been copied from the project Mimetic  
 (http://codesink.org/mimetic_mime_library.html) and relicenced from the MIT
- licence to the wxWidgets one with authorisation received from Stefano Barbato```
+ licence to the wxWidgets one with authorisation received from Stefano Barbato
+ ```
  
 - In the directory ./Executables you will find the utility rcStamp used to increment the application version numbers. A separate Github project is available should you want to recompile it or just inspect the source code. If was adapted from a CodeProject article.
