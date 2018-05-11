@@ -24,23 +24,19 @@ The accompanying help file gives more details.
 2. MSVC 2015 IDE - Express - Community version
 
 3. Inno Install builder from http://www.jrsoftware.org/isinfo.php - uses the ISS package 
-	from github.com/stfx/innodependencyinstaller or 
-	codeproject.com/Articles/20868/NET-Framework-1-1-2-0-3-5-Installer-for-InnoSetup. 
-	The .sln file is set up to copy the executable, the help file as well as any documentation files to the directory ./Inno/src and the resulting executable will be left in ./Inno/bin
+	from github.com/stfx/innodependencyinstaller. A useful helper script to control the Microsoft re-distributable files also came originally from CodeProject see: https://www.codeproject.com/Articles/20868/NET-Framework-Installer-for-InnoSetup.
+ I believe the latest code has now moved to Github: https://github.com/stfx/innodependencyinstaller The .sln file is set up to copy the executable, the help file as well as any documentation files to the directory ./Inno/src and the resulting executable will be left in ./Inno/bin
 
 4. Appropriate MSVC distributable package. The files are expected to be left in ./Inno/bin/myProgramDependencies. These are typically downloaded from Microsoft. Copies of the necessary files for the version of the MSVC IDE are part of the package.
 
-5. A useful helper script to control the Microsoft re-distributable files also came originally from CodeProject see: https://www.codeproject.com/Articles/20868/NET-Framework-Installer-for-InnoSetup
- I believe the latest code has now moved to Github: https://github.com/stfx/innodependencyinstaller
-
-6. RCStamp utility - the executable RCStamp.exe is included in the ./Executables directory 
+5. RCStamp utility - the executable RCStamp.exe is included in the ./Executables directory 
 and is used as part of the 'release' build process to update the 
 major, minor & build numbers. To modify either by more than one increment or to modify them in any other way, it is best to edit the .rc file by hand to change any one or all to the new starting value. But note, all 'copies' of each number in the .RC must be modified in sync.
 It is a command line utility and you can get some help by running it in a DOS window. You will want to move or copy it to a directory on the PATH so that Windows can find it or you can add the full path in the 'release' build pre-link build event.
 It is an adaptation of a CodeProject utility and you can find my modified source and more comments at
 tester0077/rcstamp.
 
-7. libcurl - the current version uses libcurl 7.59 compiled using the the MSVC IDE command 
+6. libcurl - the current version uses libcurl 7.59 compiled using the the MSVC IDE command 
 prompt and the batch file shown below, should be executed in winbuild. 
 Libcurl is included in the project via the environment variable `$(LIBCURL_2015) = D:\pkg\C\curl-master\`
 where D:\pkg\C\curl-master\ is the main libcurl directory.
@@ -53,15 +49,15 @@ nmake /f Makefile.vc mode=static VC=14 WITH_DEVEL=../deps WITH_ZLIB=static GEN_P
 nmake /f Makefile.vc mode=static VC=14 WITH_DEVEL=../deps WITH_ZLIB=static GEN_PDB=yes DEBUG=no MACHINE=x86
 ```
 
-8. Checksum - Jem Berkes' ver 1.2 MD5sums.exe -- http://www.pc-tools.net/win32/md5sums/
+7. Checksum - Jem Berkes' ver 1.2 MD5sums.exe -- http://www.pc-tools.net/win32/md5sums/
 
-9. UPX file compressor - UPX 3.03w Markus Oberhumer, Laszlo Molnar & John Reiser   Apr 27th 2008 see https://upx.github.io/
+8. UPX file compressor - UPX 3.03w Markus Oberhumer, Laszlo Molnar & John Reiser   Apr 27th 2008 see https://upx.github.io/
 
-10. HelpNDoc - The help files are built using the free version of HelpNDoc from https://www.helpndoc.com/
+9. HelpNDoc - The help files are built using the free version of HelpNDoc from https://www.helpndoc.com/
 If you will be using the application for anything other than personal use, you may have to
 buy a license or use some alternative means to build the help files. Using this application is entirely optional if you want to produce the help files manually or have some other application. You can inspect the .SLN and project files to see how HelpNDoc is integrated to create the help file as part of a build.
 
-11. wxCrafter - The GUI is built using a licensed version of wxCrafter. It is expected that all features used by this project are covered by the free version, if not you'd have to use 
+10. wxCrafter - The GUI is built using a licensed version of wxCrafter. It is expected that all features used by this project are covered by the free version, if not you'd have to use 
 a different GUI builder of your choice or modify things by hand.
 
 ## Other Details
