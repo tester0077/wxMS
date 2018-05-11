@@ -1,0 +1,26 @@
+//#include "wx/msw/wx.rc"
+// this icon is used with wxFrame::SetIcon()
+sample ICON "rc/wxMS-1.ico"
+// next line is very important - KEEP!!
+// without it, we cannot access the version info in the executable
+// possibly because it is not included without this line
+#define IDR_VERSION1 1
+IDR_VERSION1 VERSIONINFO
+FILEVERSION 0, 0, 0, 0
+PRODUCTVERSION 0, 0, 0, 0
+FILEOS 0x00000004
+FILETYPE 0x00000001
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "04090000"
+    BEGIN
+      VALUE "FileVersion", "0, 0, 0, 0"
+      VALUE "ProductVersion", "0, 0, 0, 0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 0x0000
+  END
+END

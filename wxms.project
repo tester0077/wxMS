@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="wxms" Version="10.0.0" InternalType="GUI">
+  <VirtualDirectory Name="wxMsPop3Preview">
+    <VirtualDirectory Name="src">
+      <File Name="wxMsPop3Preview/wxMsMessageExtractBody.cpp"/>
+      <File Name="wxMsPop3Preview/codec/rfc2231.cpp"/>
+      <File Name="wxMsPop3Preview/codec/rfc2047.cpp"/>
+      <File Name="wxMsPop3Preview/codec/charsetconv.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="h">
+      <File Name="wxMsPop3Preview/codec/rfc2231.h"/>
+      <File Name="wxMsPop3Preview/codec/rfc2047.h"/>
+      <File Name="wxMsPop3Preview/codec/charsetconv.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="wxMsOptionsDialog">
+    <VirtualDirectory Name="src">
+      <File Name="wxMsOptionsDialog/wxMsOptionsSelectMailClient.cpp"/>
+      <File Name="wxMsOptionsDialog/wxMsOptionsDialogBase_bitmaps.cpp"/>
+      <File Name="wxMsOptionsDialog/wxMsOptionsDialogBase.cpp"/>
+      <File Name="wxMsOptionsDialog/wxMsOptionsDialog.cpp"/>
+      <File Name="wxMsOptionsDialog/wxMsOptionDialogLog.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="h">
+      <File Name="wxMsOptionsDialog/wxMsOptionsDialogBase.h"/>
+      <File Name="wxMsOptionsDialog/wxMsOptionsDialogh.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="wxMsFilter">
+    <VirtualDirectory Name="src">
+      <File Name="wxMsFilter/wxMsFilterDialog.cpp"/>
+      <File Name="wxMsFilter/wxMsFilterConf.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="h">
+      <File Name="wxMsFilter/wxMsFilterListh.h"/>
+      <File Name="wxMsFilter/wxMsFilterDialogh.h"/>
+      <File Name="wxMsFilter/wxMsFilterConfh.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="wxMsAbout">
+    <VirtualDirectory Name="src">
+      <File Name="wxMsAbout/wxMsAboutDlgBase_bitmaps.xrc"/>
+      <File Name="wxMsAbout/wxMsAboutDlgBase_bitmaps.cpp"/>
+      <File Name="wxMsAbout/wxMsAboutDlgBase.cpp"/>
+      <File Name="wxMsAbout/wxMsAboutDlg.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="h">
+      <File Name="wxMsAbout/wxMsAboutDlgBase.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="mimetic">
+    <VirtualDirectory Name="src">
+      <File Name="mimetic/codec/qp.cxx"/>
+      <File Name="mimetic/codec/base64.cxx"/>
+      <File Name="mimetic/rfc822/rmessage.cxx"/>
+      <File Name="mimetic/rfc822/rheader.cxx"/>
+      <File Name="mimetic/rfc822/messageid.cxx"/>
+      <File Name="mimetic/rfc822/mailboxlist.cxx"/>
+      <File Name="mimetic/rfc822/mailbox.cxx"/>
+      <File Name="mimetic/rfc822/group.cxx"/>
+      <File Name="mimetic/rfc822/fieldvalue.cxx"/>
+      <File Name="mimetic/rfc822/field.cxx"/>
+      <File Name="mimetic/rfc822/datetime.cxx"/>
+      <File Name="mimetic/rfc822/addresslist.cxx"/>
+      <File Name="mimetic/rfc822/address.cxx"/>
+      <File Name="mimetic/version.cxx"/>
+      <File Name="mimetic/utils.cxx"/>
+      <File Name="mimetic/strutils.cxx"/>
+      <File Name="mimetic/mimeversion.cxx"/>
+      <File Name="mimetic/mimetic.vcxproj.filters"/>
+      <File Name="mimetic/mimetic.vcxproj"/>
+      <File Name="mimetic/mimeentity.cxx"/>
+      <File Name="mimetic/message.cxx"/>
+      <File Name="mimetic/header.cxx"/>
+      <File Name="mimetic/fieldparam.cxx"/>
+      <File Name="mimetic/contenttype.cxx"/>
+      <File Name="mimetic/contenttransferencoding.cxx"/>
+      <File Name="mimetic/contentid.cxx"/>
+      <File Name="mimetic/contentdisposition.cxx"/>
+      <File Name="mimetic/contentdescription.cxx"/>
+      <File Name="mimetic/body.cxx"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="h">
+      <File Name="mimetic/include/wxFileIterator.h"/>
+      <File Name="mimetic/include/version.h"/>
+      <File Name="mimetic/include/utils.h"/>
+      <File Name="mimetic/include/tree.h"/>
+      <File Name="mimetic/include/tokenizer.h"/>
+      <File Name="mimetic/include/strutils.h"/>
+      <File Name="mimetic/include/streambufs.h"/>
+      <File Name="mimetic/include/mimeversion.h"/>
+      <File Name="mimetic/include/mimetic.h"/>
+      <File Name="mimetic/include/mimeentitylist.h"/>
+      <File Name="mimetic/include/mimeentity.h"/>
+      <File Name="mimetic/include/message.h"/>
+      <File Name="mimetic/include/header.h"/>
+      <File Name="mimetic/include/fieldparam.h"/>
+      <File Name="mimetic/include/contenttype.h"/>
+      <File Name="mimetic/include/contenttransferencoding.h"/>
+      <File Name="mimetic/include/contentid.h"/>
+      <File Name="mimetic/include/contentdisposition.h"/>
+      <File Name="mimetic/include/contentdescription.h"/>
+      <File Name="mimetic/include/circular_buffer.h"/>
+      <File Name="mimetic/include/body.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="h">
+    <File Name="wxMsDebugRprth.h"/>
+    <File Name="wxMsFileLogh.h"/>
+    <File Name="wxMsPreProcDefsh.h"/>
+    <File Name="wxMsUpdateDialogh.h"/>
+    <File Name="wxMsUpdateCheckDialogh.h"/>
+    <File Name="wxMsPop3MsgArrayh.h"/>
+    <File Name="wxMsMessagePreview.h"/>
+    <File Name="wxMsListsh.h"/>
+    <File Name="wxMsh.h"/>
+    <File Name="wxMsFrameh.h"/>
+    <File Name="wxMsExtendedAddressh.h"/>
+    <File Name="wxMsCurlh.h"/>
+    <File Name="wxMsConfh.h"/>
+    <File Name="wxMsBaseFrame.h"/>
+    <File Name="wxMsAccountsDialogh.h"/>
+    <File Name="wxMsAccountDetailsh.h"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="wxMsDebugRprt.cpp"/>
+    <File Name="wxMsConnectTest.cpp"/>
+    <File Name="wxMsCrashHandler.cpp"/>
+    <File Name="wxMsFileLog.cpp"/>
+    <File Name="wxMsFrame.cpp"/>
+    <File Name="wxMsRunMailClient.cpp"/>
+    <File Name="wxMS_wxcr_bitmaps.cpp"/>
+    <File Name="wxMsUpdateUI.cpp"/>
+    <File Name="wxMsThreadCurlPop3ServerTest.cpp"/>
+    <File Name="wxMsThreadCurlPop3GetMessages.cpp"/>
+    <File Name="wxMsThreadCurlPop3GetMessageBody.cpp"/>
+    <File Name="wxMsThreadCurlPop3DeleteMsg.cpp"/>
+    <File Name="wxMsPrintMimeStructure.cpp"/>
+    <File Name="wxMsPop3Thread.cpp"/>
+    <File Name="wxMsPop3MessagesList.cpp"/>
+    <File Name="wxMsPop3MessagePreview.cpp"/>
+    <File Name="wxMsPop3ExecuteCommand.cpp"/>
+    <File Name="wxMsOptions.cpp"/>
+    <File Name="wxMsOnProcessMail.cpp"/>
+    <File Name="wxMsMessagePreview.cpp"/>
+    <File Name="wxMsMailGridClicks.cpp"/>
+    <File Name="wxMsMailGridChar.cpp"/>
+    <File Name="wxMsMailGrid.cpp"/>
+    <File Name="wxMsMailCheckTimer.cpp"/>
+    <File Name="wxMsLog.cpp"/>
+    <File Name="wxMsLinkerTime.cpp"/>
+    <File Name="wxMsHelp.cpp"/>
+    <File Name="wxMsGetMessageFilter.cpp"/>
+    <File Name="wxMsFriendsBlackLists.cpp"/>
+    <File Name="wxMsDeleteMsgs.cpp"/>
+    <File Name="wxMsCurlPop3UpdateListEvent.cpp"/>
+    <File Name="wxMsCurlPop3ServerTest.cpp"/>
+    <File Name="wxMsCurlPop3GetMessages.cpp"/>
+    <File Name="wxMsCurlPop3ExecuteCmd.cpp"/>
+    <File Name="wxMsCurlPop3AddHeader2MsgList.cpp"/>
+    <File Name="wxMsContextMenu.cpp"/>
+    <File Name="wxMsConfig.cpp"/>
+    <File Name="wxMsColSaveRestore.cpp"/>
+    <File Name="wxMsCmdline.cpp"/>
+    <File Name="wxMsClient.cpp"/>
+    <File Name="wxMsCheckPopMail.cpp"/>
+    <File Name="wxMsCheckInternet.cpp"/>
+    <File Name="wxMsCheck4Update.cpp"/>
+    <File Name="wxMsBounceMsgs.cpp"/>
+    <File Name="wxMsBaseFrame.cpp"/>
+    <File Name="wxMsAccountsDialog.cpp"/>
+    <File Name="wxMsAccountDetails.cpp"/>
+    <File Name="wxMsAccountConf.cpp"/>
+    <File Name="wxMS.cpp"/>
+    <File Name="wsMsOptions.cpp"/>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-Wall;$(shell /home/arnold/public/wxWidgets-3.1.1/debStat/wx-config --cxxflags --unicode=yes  );-rdynamic" C_Options="-g;-O0;-Wall;$(shell wx-config --cxxflags --unicode=yes  )" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="mimetic/include"/>
+        <IncludePath Value="wxMsOptionsDialog"/>
+        <IncludePath Value="wxMsFilter"/>
+        <IncludePath Value="wxMsUpdateCheck"/>
+        <IncludePath Value="/home/arnold/Downloads/libcurl-7.58.0/include"/>
+        <IncludePath Value="-I/usr/local/include"/>
+        <Preprocessor Value="wxUSE_UNICODE"/>
+        <Preprocessor Value="wxUNICODE"/>
+      </Compiler>
+      <Linker Options="$(shell /home/arnold/public/wxWidgets-3.1.1/debStat/wx-config   --libs --unicode=yes)  -L/usr/local/lib -lcurl" Required="yes"/>
+      <ResourceCompiler Options="$(shell  /home/arnold/public/wxWidgets-3.1.1/debStat/wx-config --rcflags)" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-Wall;$(shell /home/arnold/public/wxWidgets-3.1.0/relStat/wx-config --cxxflags --unicode=yes --debug=no);-rdynamic" C_Options="-O2;-Wall;$(shell wx-config --cxxflags --unicode=yes --debug=no)" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="mimetic/include"/>
+        <IncludePath Value="wxMsOptionsDialog"/>
+        <IncludePath Value="wxMsFilter"/>
+        <IncludePath Value="wxMsUpdateCheck"/>
+        <IncludePath Value="/home/arnold/Downloads/libcurl-7.58.0/include"/>
+        <IncludePath Value="-I/usr/local/include"/>
+        <Preprocessor Value="NDEBUG"/>
+        <Preprocessor Value="wxUSE_UNICODE"/>
+        <Preprocessor Value="wxUNICODE"/>
+      </Compiler>
+      <Linker Options="-s;$(shell /home/arnold/public/wxWidgets-3.1.0/relStat/wx-config  --libs --unicode=yes --debug=no) -L/usr/local/lib -lcurl" Required="yes"/>
+      <ResourceCompiler Options="$(shell  /home/arnold/public/wxWidgets-3.1.0/relStat/wx-config --rcflags)" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

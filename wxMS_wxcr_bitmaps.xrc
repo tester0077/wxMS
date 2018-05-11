@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+  <!-- Handler Generation is ON -->
+  <object class="wxBitmap" name="Help">rc\Help.png</object>
+  <object class="wxBitmap" name="mail_delete">rc\mail_delete.xpm</object>
+  <object class="wxBitmap" name="mail_get">rc\mail_get.xpm</object>
+  <object class="wxBitmap" name="mail_send">rc\mail_send.png</object>
+  <object class="wxBitmap" name="thunderbird-24x24">rc\thunderbird-24x24.png</object>
+  <object class="wxBitmap" name="wxMS-1">rc\wxMS-1.ico</object>
+</resource>

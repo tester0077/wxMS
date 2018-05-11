@@ -1,0 +1,105 @@
+
+Installing wxMS
+
+Once you have downloaded the installer, simply run it.
+
+It will install wxMS and any files needed to run it in the
+directory of your choice. It will also produce a desktop
+icon for your convenience.
+
+Uninstalling wxMS
+
+In case you want to uninstall wxMS from your machine, simply run the 
+uninstall entry from the start menu. All files, except the .INI and 
+log file, if any, will be removed. If you decided to not use the 
+program any longer, you can remove the whole entry, although in that 
+case you would have to reconfigure the program again, if you decide to 
+use it again later.
+
+Additional Software  Requirements
+
+All OSes may will require you to install the Microsoft Visual C++ 
+2010 Redistributable Package (x86) from
+http://www.microsoft.com/en-us/download/confirmation.aspx?id=5555
+This package installs MSCVP100.DLL & MSVCR100.dll
+
+Windows 8.x
+Due to lack of a Windows 8 system, wxMS has not been tested under 
+Windows 8, though it is expected to install and run without 
+problems.
+If you experience any issues, please contact the author.
+
+Windows 10
+wxMS has been installed under Windows 10 and runs with the 
+redistributable package installed.
+   
+Running the Program:
+
+This information is also provided in the help system.
+
+First time set-up.
+
+When you run wxMS for the first time, or if you delete or rename it's 
+.INI file, you will need to enter some basic information needed for 
+the program to run and do its job.
+
+As a minimum you will need to know:
+
+ - POP3 server URL - the server which handles yout mail
+   delivery; Either your ISP or sys admin should be
+   able to help you with that.
+ - the e-mail address accounts, the user names and 
+   passwords associated with each.
+   
+
+All wxMS settings are saved in the INI file wxMS.ini which will reside 
+in one of the data directories. The exact path depends on the OS.
+
+If you setup more than one identity for reporting SPAM, you can
+select which identity to use for sending e-mail from the drop-
+down box.
+
+Unwanted or unused accounts can be deleted using the 'Delete"
+button.
+
+
+---------------------------------------------------------------------
+OPTIONS
+
+Use the "Options" menu to configure the following items:
+
+Preferences
+
+General:
+Launch the default e-mail client after processing: deletes of the messages
+which have the check box in the 'Delete' column set.
+
+Check e-mail at start up: As soon as the application is started, it will 
+check the enabled accounts for messages.
+
+Mail Check: This gives you the option to have wxMS check for new mail at
+intervals selected by the 'minutes' spin control.
+
+Check for new version at start up: Should wxMS contact the download server
+to see if a newer version of the program is available.
+
+Number of lines to retrieve in a TOP request: As part of the initial mail
+check, wxMS only downloads the header information. Here you can specify
+how many extra lines of the message body should be downloaded at the same 
+time. There generally is no advantage to have extra lines downloaded and
+it is best to simply leave this option at 0.
+
+Log:
+
+
+Filters:
+In the filter Dialog you can set up conditions which the wxMS is to use to 
+identify and possibly mark for deletion, some of the message lines displayed
+in the main grid.
+
+Also note that Filter option is merely a different pages in the Options 
+notebook.
+
+Accounts
+In this dialog you can set up the information necessary for the POP3 mail
+accounts you wish to handle using wxMS>

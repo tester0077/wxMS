@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebUniStat|Win32">
+      <Configuration>DebUniStat</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelUniStat|Win32">
+      <Configuration>RelUniStat</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0023AC3A-CC31-4016-87D6-943BE4FB5F3D}</ProjectGuid>
+    <RootNamespace>Inno</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <PreLinkEventUseInBuild>false</PreLinkEventUseInBuild>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>:: Can't make this a batch file because none of the macros
+:: will be defined - would have to pass them in via arguments
+:: since there are only two, it should be workable
+:: 
+:: check to make sure the dependecies directory exists
+:: assume if it exists it will have th enecessary file :-)
+@echo off
+if  exist "$(ProjectDir)bin/MyProgramDependencies" goto done
+echo. The redistributable dependencies directory 
+echo "$(ProjectDir)bin/MyProgramDependencies"
+start C:\Windows\media\Alarm10.wav
+echo  does NOT exist. Please create it and copy the necessary file into it BEL BEL
+exit
+:done
+
+::  copy the files to the Inno Installer Script src directory
+::::: NOTE the copy commands will NOT tolerate the back slash '/'
+:: help file
+echo on
+echo copy Help: $(SolutionDir)help\$(SolutionName)Help.chm $(SolutionDir)Inno\src\
+copy $(SolutionDir)help\$(SolutionName)Help.chm $(SolutionDir)Inno\src\
+:: remove the old executable
+if exist $(SolutionDir)Inno\src\$(SolutionName).exe del $(SolutionDir)Inno\src\$(SolutionName).exe
+:: compress the executable &amp; copy it
+echo upx:  $(SolutionDir)$(Configuration)/$(SolutionName).exe -o   $(SolutionDir)Inno\src\$(SolutionName).exe
+c:\bin\upx    $(SolutionDir)$(Configuration)/$(SolutionName).exe -o   $(SolutionDir)Inno\src\$(SolutionName).exe
+:: The License text
+echo copy license: $(SolutionDir)doc\$(SolutionName)-License.txt $(SolutionDir)Inno\src\
+copy $(SolutionDir)doc\$(SolutionName)-License.txt $(SolutionDir)Inno\src\
+:: the readme file
+echo copy WhatsNew: $(SolutionDir)doc\$(SolutionName)-WhatsNew.txt $(SolutionDir)Inno\src\
+copy $(SolutionDir)doc\$(SolutionName)-WhatsNew.txt $(SolutionDir)Inno\src\
+:: the install file
+echo copy Install: $(SolutionDir)doc\$(SolutionName)-Install.txt $(SolutionDir)Inno\src\
+copy $(SolutionDir)doc\$(SolutionName)-Install.txt $(SolutionDir)Inno\src\
+:: Now compile    &lt;&lt;&lt;&lt;&lt; can't have bare '::' on a line
+:: the
+:: Inno Setup Script to build the installer
+:: echo
+if exist "c:/Program files (x86)/Inno Script Studio/ISStudio.exe" goto compile
+echo Can't find "c:/Program files (x86)/Inno Script Studio/ISStudio.exe"
+exit
+:compile
+if exist $(ProjectDir)\setup.iss goto compile2
+echo Can't find: $(ProjectDir)\setup.iss
+exit
+:compile2
+echo compiling: $(ProjectDir)setup.iss
+echo Command: "c:\Program files (x86)\Inno setup 5\compil32.exe" 
+"c:\Program files (x86)\Inno Setup 5\compil32.exe"/cc $(ProjectDir)setup.iss
+:: echo
+:: MUST use Jem Berkes' ver 1.2 MD5sums.exe to get the plain output I want.
+:: first delete the old files otherwise we get leftovers
+::if exist $(SolutionDir)Inno/bin/*.md5 del $(SolutionDir)Inno/bin/*.md5
+::if exist $(SolutionDir)\$(Configuration)\setup\$(SolutionName)_Setup.md5  del $(SolutionDir)\$(Configuration)\setup\$(SolutionName)_Setup.md5
+echo md5 1: $(SolutionDir)Inno\src\$(SolutionName).exe
+c:\bin\md5sums -u $(SolutionDir)Inno\src\$(SolutionName).exe &gt;  $(SolutionDir)Inno\bin\$(SolutionName)_exe.md5
+echo md5 2: $(SolutionDir)Inno\bin\$(SolutionName)-*.exe
+c:\bin\md5sums -u $(SolutionDir)Inno\bin\$(SolutionName)-*.exe &gt; $(SolutionDir)Inno\bin\$(SolutionName)_Setup.md5
+</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Building Installer ...</Message>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\help\wxMsHelp.hnd" />
+    <None Include="..\RelUniStat\wxMS.exe" />
+    <None Include="setup.iss" />
+    <None Include="src\install.txt" />
+    <None Include="src\ipv4-address-space.xml" />
+    <None Include="src\wxSR.exe" />
+    <None Include="src\wxSRHelp.chm" />
+    <None Include="src\wxSrLicense.txt" />
+    <None Include="src\wxSrWhatsNew.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

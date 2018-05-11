@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebUniStat|Win32">
+      <Configuration>DebUniStat</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelUniStat|Win32">
+      <Configuration>RelUniStat</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D60A8608-36E1-413B-9B98-E11666B8493B}</ProjectGuid>
+    <RootNamespace>wxMS</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">$(Configuration)\</IntDir>
+    <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">false</PreBuildEventUseInBuild>
+    <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">false</PreLinkEventUseInBuild>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">$(Configuration)\</IntDir>
+    <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">false</PreLinkEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">false</PostBuildEventUseInBuild>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">
+    <IncludePath>$(SolutionDir)/;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebUniStat|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalOptions>/wd4996 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(WXWIN_310_2015)/lib/vc_lib/mswud;$(WXWIN_310_2015)/include;./verLib;./exeHdrLib;rc;./wxMsOptionsDialog;wxMsUpdateCheck;$(LIBCURL_2015)include;./wxMsUtLib;./wxMsFilter;../;./wxMsRfc2047Decode;./mimetic/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wxmsw31ud_xrc.lib;wxmsw31ud_richtext.lib;wxmsw31ud_aui.lib;wxmsw31ud_html.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wxmsw31ud_adv.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxmsw31ud_media.lib;wxmsw31ud_gl.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_qa.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_webview.lib;wxtiffd.lib;wxjpegd.lib;wxpngd.lib;wxzlibd.lib;wxregexud.lib;wxexpatd.lib;winmm.lib;comctl32.lib;rpcrt4.lib;verLib.lib;version.lib;exeHdr.lib;wsock32.lib;wxMsOptionsDialog.lib;wxMsUpdateCheck.lib;wxMsFilterDialog.lib;UrlMon.lib;libcurl_a_debug.lib;mimetic.lib;wxMsAboutDlg.lib;wxMsPop3Preview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(WXWIN_310_2015)/lib/vc_lib;./$(Configuration);$(LIBCURL_2015)\builds\libcurl-vc14-x86-debug-static-zlib-static-ipv6-sspi-winssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(WXWIN_310_2015)/include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelUniStat|Win32'">
+    <PreBuildEvent>
+      <Message>Updating Build Number ... </Message>
+      <Command>RCStamp -v  ./rc/$(ProjectName)r.rc *.*.+.*
+rc.exe /I$(WXWIN_300)/include /fo$(Configuration)/$(ProjectName)r.res ./rc/$(ProjectName)r.rc
+</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(WXWIN_310_2015)/lib/vc_lib/mswu;$(WXWIN_310_2015)/include;./verLib;./exeHdrLib;./rc;wxMsOptionsDialog;wxMsUpdateCheck;./wxMsUtLib;./wxMsFilter;$(LIBCURL_2015)\include;./wxMsRfc2047Decode;./mimetic/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wxbase31u_net.lib;wxmsw31u_xrc.lib;wxmsw31u_html.lib;wxmsw31u_adv.lib;wxmsw31u_core.lib;wxbase31u_xml.lib;wxbase31u.lib;wxmsw31u_qa.lib;wxtiff.lib;wxjpeg.lib;wxpng.lib;wxzlib.lib;wxregexu.lib;wxexpat.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;odbc32.lib;verLib.lib;version.lib;exeHdr.lib;wxMsOptionsDialog.lib;wxMsUpdateCheck.lib;libcurl_a.lib;wxMsFilterDialog.lib;Urlmon.lib;mimetic.lib;wxMsAboutDlg.lib;wxMsPop3Preview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(WXWIN_310_2015)/lib/vc_lib;../verLib/$(Configuration);../exeHdrLib/$(Configuration);./$(Configuration);wxMsUpdateCheck;$(LIBCURL_2015)builds\libcurl-vc14-x86-release-static-zlib-static-ipv6-sspi-winssl\\lib;D:\pkg\C++\MSVC2010\mimetic-master\win32\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy  /B /Y  /V $(SolutionDir)help\$(SolutionName)Help.chm $(USERPROFILE)\Appdata\Roaming\$(ProjectName)\$(SolutionName)Help.chm</Command>
+      <Message>Copying .CHM file</Message>
+    </PostBuildEvent>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(WXWIN_310_2015)/include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="wxMsAccountConf.cpp" />
+    <ClCompile Include="wxMsBounceMsgs.cpp" />
+    <ClCompile Include="wxMsCheck4Update.cpp" />
+    <ClCompile Include="wxMsCheckInternet.cpp" />
+    <ClCompile Include="wxMsCheckPopMail.cpp" />
+    <ClCompile Include="wxMsColSaveRestore.cpp" />
+    <ClCompile Include="wxMsConnectTest.cpp" />
+    <ClCompile Include="wxMsContextMenu.cpp" />
+    <ClCompile Include="wxMsCurlPop3AddHeader2MsgList.cpp" />
+    <ClCompile Include="wxMsCurlPop3ExecuteCmd.cpp" />
+    <ClCompile Include="wxMsCurlPop3GetMessages.cpp" />
+    <ClCompile Include="wxMsCurlPop3ServerTest.cpp" />
+    <ClCompile Include="wxMsCurlPop3UpdateListEvent.cpp" />
+    <ClCompile Include="wxMsDebugRprt.cpp" />
+    <ClCompile Include="wxMsDeleteMsgs.cpp" />
+    <ClCompile Include="wxMsFileLog.cpp" />
+    <ClCompile Include="wxMsFriendsBlackLists.cpp" />
+    <ClCompile Include="wxMsGetMessageFilter.cpp" />
+    <ClCompile Include="wxMsHelp.cpp" />
+    <ClCompile Include="wxMsLinkerTime.cpp" />
+    <ClCompile Include="wxMsLog.cpp" />
+    <ClCompile Include="wxMsMailCheckTimer.cpp" />
+    <ClCompile Include="wxMsMailGrid.cpp" />
+    <ClCompile Include="wxMsMailGridChar.cpp" />
+    <ClCompile Include="wxMsMailGridClicks.cpp" />
+    <ClCompile Include="wxMS.cpp" />
+    <ClCompile Include="wxMsAccountDetails.cpp" />
+    <ClCompile Include="wxMsAccountsDialog.cpp" />
+    <ClCompile Include="wxMsBaseFrame.cpp" />
+    <ClCompile Include="wxMsCmdline.cpp" />
+    <ClCompile Include="wxMsConfig.cpp" />
+    <ClCompile Include="wxMsFrame.cpp" />
+    <ClCompile Include="wxMsOnProcessMail.cpp" />
+    <ClCompile Include="wxMsOptions.cpp" />
+    <ClCompile Include="wxMsPop3AdvancedOptionsDlg.cpp" />
+    <ClCompile Include="wxMsPop3MessagePreview.cpp" />
+    <ClCompile Include="wxMsPop3MessagesList.cpp" />
+    <ClCompile Include="wxMsPrintMimeStructure.cpp" />
+    <ClCompile Include="wxMsRunMailClient.cpp" />
+    <ClCompile Include="wxMsThreadCurlPop3DeleteMsg.cpp" />
+    <ClCompile Include="wxMsThreadCurlPop3GetMessageBody.cpp" />
+    <ClCompile Include="wxMsThreadCurlPop3GetMessages.cpp" />
+    <ClCompile Include="wxMsThreadCurlPop3ServerTest.cpp" />
+    <ClCompile Include="wxMsUpdateUI.cpp" />
+    <ClCompile Include="wxMS_wxcr_bitmaps.cpp" />
+    <ClCompile Include="wxMsPop3Thread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="wxMsCurlh.h" />
+    <ClInclude Include="wxMsDebugRprth.h" />
+    <ClInclude Include="wxMsExtendedAddressh.h" />
+    <ClInclude Include="wxMsAccountDetailsh.h" />
+    <ClInclude Include="wxMsAccounth.h" />
+    <ClInclude Include="wxMsAccountsDialogh.h" />
+    <ClInclude Include="wxMsBaseFrame.h" />
+    <ClInclude Include="wxMsCmdlineh.h" />
+    <ClInclude Include="wxMsConfh.h" />
+    <ClInclude Include="wxMsFrameh.h" />
+    <ClInclude Include="wxMSh.h" />
+    <ClInclude Include="wxMsFileLogh.h" />
+    <ClInclude Include="wxMsPop3AdvancedOptionsDlgh.h" />
+    <ClInclude Include="wxMsPop3MsgListh.h" />
+    <ClInclude Include="wxMsPreProcDefsh.h" />
+    <ClInclude Include="wxMsUpdateCheckDialogh.h" />
+    <ClInclude Include="wxMsWindowsIdsh.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="rc\wxMsr.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
