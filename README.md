@@ -1,7 +1,9 @@
 # wxMS
 ## MailScreener for POP3 Mail Accounts.
 
-#### I am posting this code to Github to, hopefully, make it useful for others because it does what I need at present & I no longer have the time for further major development. Please use the code as you see fit. I will try to help with getting anyone to compile the project under Windows, but my time is limited ...
+##### I am posting this code to Github to, hopefully, make it useful for others because it does what I need at present & I no longer have the time for further major development. Please use the code as you see fit. I will try to help with getting anyone to compile the project under Windows, but my time is limited ...
+
+#### All of my code is released under the wxWidgets license, the rest (mimetic & libcurl), under whichever license it was released.
 
 The program allows you to preview messages in a POP3 mail account and classify the message according to a customizable filter into legitimate mail, i. e. mail you want to download with your  mail client and SPAM, or mail you want to delete from your POP3 account without ever downloading it.
 It was inspired by an early freebie version of Mailwasher.
