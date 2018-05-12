@@ -64,9 +64,9 @@
 // version specific #defines
 #if defined (_DEBUG )
 
-#  define CHECK_4_UPDATE_URL _T("http://leno-10/wxMsVer/wxMSversion.php");
+#  define CHECK_4_UPDATE_URL _T("http://local/wxMsVer/wxMSversion.php");
 #else
-#  define CHECK_4_UPDATE_URL _T("http://www.columbinehoney.net/wxMsVer/wxMSversion.php");
+#  define CHECK_4_UPDATE_URL _T("http://remote/wxMsVer/wxMSversion.php");
 
 #endif  // _DEBUG
 #if !defined( _MSC_VER )  // overrides for linux
