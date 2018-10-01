@@ -23,6 +23,7 @@ protected:
   MyFrame *m_pParent;
   void OnSaveMimeSource2File(wxCommandEvent& event);
   void OnSaveMimeStruct2File(wxCommandEvent& event);
+  void OnCopySource2Clipboard(wxCommandEvent& event);
 };
 
 #endif // WXMSMESSAGEPREVIEW_H

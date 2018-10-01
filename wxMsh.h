@@ -40,7 +40,9 @@ extern int giMajorVersion;
 extern int giMinorVersion;
 extern int giBuildNumber;
 #endif
-
+#if defined( WANT_SINGLE_INSTANCE )
+extern wxSingleInstanceChecker *gp_checker;
+#endif
 // ------------------------------------------------------------------
 #include "wxMsPreProcDefsh.h" // needs to be first
 // ------------------------------------------------------------------
@@ -85,6 +87,7 @@ class MyApp : public wxApp
 {
 public:
   MyApp();
+  ~MyApp();
   MyFrame *m_frame;
   wxString m_wsAppName;
   // Override base class virtuals:
@@ -100,10 +103,9 @@ public:
   void OnInitCmdLine(wxCmdLineParser& parser);
   bool OnCmdLineParsed(wxCmdLineParser& parser);
 #endif
-
-#if defined( WANT_SINGLE_INSTANCE )
-  wxSingleInstanceChecker *m_checker;
-  ~MyApp();
+#if defined( WANT_NEW_STOP )
+  void OnAppEndSession(wxCloseEvent& event);
+  void OnAppQueryEndSession(wxCloseEvent& event);
 #endif
 #if defined( WANT_DBGRPRT )
   // called when a crash occurs in this application
@@ -155,6 +157,7 @@ public:
 
   // Filter list
   std::vector<MyFilterListEl> m_FilterList;   ///< std::list holding all filter data
+  void InsertFilter( MyFilterListEl *p );     ///< insert the filter element in the proper alpha place
   // ------------------------------------------------------------------
   // for stopping mail check
   //
@@ -169,13 +172,18 @@ public:
 
   // accessor to dial up manager
   wxDialUpManager *GetDialer() const { return m_dial; }
-
+#endif
+#if defined( WANT_NEW_STOP )
   // indicates that we're shutting down and all threads should exit
   bool              m_bShuttingDown;
 #endif
-
+#if defined( WANT_SEMAPHORE )
+  // semaphore used to wait for the threads to exit, see MyFrame::OnQuit()
+  wxSemaphore m_semAllDone;
+#endif
 private:
   bool              m_bSilentMode;
+
 #if defined( WANT_MSVC_INTERNET_TEST )
   wxDialUpManager  *m_dial;
 #endif

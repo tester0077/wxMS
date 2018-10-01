@@ -124,4 +124,38 @@ void wxMsMessagePreview::OnSaveMimeSource2File(wxCommandEvent& event)
   }
 }
 
+// ------------------------------------------------------------------
+#include <wx/clipbrd.h>
+/**
+ * Copy all of the text from the text control to the clipboard.
+ */
+void wxMsMessagePreview::OnCopySource2Clipboard(wxCommandEvent& WXUNUSED(event) )
+{
+  wxString wsSource;
+  if (wxTheClipboard->Open())
+  {
+    if (wxTheClipboard->IsSupported( wxDF_UNICODETEXT ))
+    {
+      wxTextDataObject data;
+      int n = m_textCtrlMessageSource->GetNumberOfLines();
+      int i;
+      for( i = 0; i < n; i++ )
+      {
+        wsSource += m_textCtrlMessageSource->GetLineText( i ) + _T("\r\n");
+      }
+      if( wsSource.Length() )
+      {
+        wxTheClipboard->Clear();
+        wxTheClipboard->SetData( new wxTextDataObject( wsSource ) );
+        wxTheClipboard->Flush();
+        // would need to translate all escape sequences
+//        if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
+//          wxLogMessage( wsSource );
+      }
+    }
+    wxTheClipboard->Close();
+  }
+//  event.Skip();
+}
+
 // ------------------------------- eof ------------------------------

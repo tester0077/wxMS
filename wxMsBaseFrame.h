@@ -4,8 +4,8 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _HUMMERSVN_WXMS_CURL_WXMS_CURL_BASE_CLASSES_H
-#define _HUMMERSVN_WXMS_CURL_WXMS_CURL_BASE_CLASSES_H
+#ifndef _WXMS_GITHUB_WXMS_WXMS_CURL_BASE_CLASSES_H
+#define _WXMS_GITHUB_WXMS_WXMS_CURL_BASE_CLASSES_H
 
 #include <wx/settings.h>
 #include <wx/xrc/xmlres.h>
@@ -74,7 +74,6 @@ public:
         wxID_OPEN_MAIL_CLIENT = 10019,
         wxID_OPTION_SETUP = 10020,
         wxID_PROCESS_MAIL = 10021,
-        wxID_TOOL_RUN_UT = 10022,
     };
 protected:
     wxMenuBar* m_menubarMain;
@@ -96,10 +95,10 @@ protected:
     wxMenuItem* m_separator2;
     wxMenuItem* m_menuEmailPreview;
     wxMenuItem* m_separator3;
-    wxMenuItem* m_menuEmailMarkTolDeleteAll;
+    wxMenuItem* m_menuEmailMarkDeleteAll;
     wxMenuItem* m_menuEmailMarkBounceAll;
     wxMenuItem* m_separator4;
-    wxMenuItem* m_menuItemUnmarkAllDelete;
+    wxMenuItem* m_menuItemClearAllDelete;
     wxMenuItem* m_menuItemClearAllBounce;
     wxMenuItem* m_menuItem239;
     wxMenuItem* m_menuEmailClearList;
@@ -110,8 +109,6 @@ protected:
     wxMenuItem* m_separator5;
     wxMenuItem* m_menuItemLogShow;
     wxMenuItem* m_menuItemLogClear;
-    wxMenuItem* m_menuItem205;
-    wxMenuItem* m_menuItemRunUT;
     wxMenu* m_menuTools;
     wxMenuItem* m_menuToolsCheckNew;
     wxMenuItem* m_menuItemToolStop;
@@ -156,9 +153,9 @@ protected:
     virtual void OnUpdateUiEmailDelete(wxUpdateUIEvent& event) { event.Skip(); }
     virtual void OnEmailPreview(wxCommandEvent& event) { event.Skip(); }
     virtual void OnUpdateUiPreview(wxUpdateUIEvent& event) { event.Skip(); }
-    virtual void OnMarkToDeleteAll(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnMarkDeleteAll(wxCommandEvent& event) { event.Skip(); }
     virtual void OnUpdateUiMarkDeleteAll(wxUpdateUIEvent& event) { event.Skip(); }
-    virtual void OnMarkToBounceAll(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnMarkBounceAll(wxCommandEvent& event) { event.Skip(); }
     virtual void OnUpdateUiMarkBounceAll(wxUpdateUIEvent& event) { event.Skip(); }
     virtual void OnClearAllDelete(wxCommandEvent& event) { event.Skip(); }
     virtual void OnUpdateUiClearAllDelete(wxUpdateUIEvent& event) { event.Skip(); }
@@ -328,9 +325,10 @@ protected:
     wxStaticText* m_staticText261;
     wxStaticLine* m_staticLine263;
     wxStaticText* m_staticText265;
-    wxStaticText* m_staticText267;
+    wxCheckBox* m_checkBoxCheckAtStartup;
+    wxStaticLine* m_staticLine445;
     wxStdDialogButtonSizer* m_stdBtnSizer269;
-    wxButton* m_button271;
+    wxButton* m_buttonOK;
 
 protected:
 
@@ -342,8 +340,9 @@ public:
     wxStaticText* GetStaticText261() { return m_staticText261; }
     wxStaticLine* GetStaticLine263() { return m_staticLine263; }
     wxStaticText* GetStaticText265() { return m_staticText265; }
-    wxStaticText* GetStaticText267() { return m_staticText267; }
-    MyDialogUpdate(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Update Check"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(333,239), long style = wxDEFAULT_DIALOG_STYLE);
+    wxCheckBox* GetCheckBoxCheckAtStartup() { return m_checkBoxCheckAtStartup; }
+    wxStaticLine* GetStaticLine445() { return m_staticLine445; }
+    MyDialogUpdate(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Update Check"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300,400), long style = wxDEFAULT_DIALOG_STYLE);
     virtual ~MyDialogUpdate();
 };
 
@@ -371,6 +370,7 @@ protected:
     wxPanel* m_panelMessageSource;
     wxTextCtrl* m_textCtrlMessageSource;
     wxButton* m_buttonSaveMimeSource2File;
+    wxButton* m_buttonCopySource2Clipboard;
     wxPanel* m_panelMimeStructure;
     wxTextCtrl* m_textCtrlMimeStructure;
     wxStdDialogButtonSizer* m_stdBtnSizer319;
@@ -378,6 +378,7 @@ protected:
 
 protected:
     virtual void OnSaveMimeSource2File(wxCommandEvent& event) { event.Skip(); }
+    virtual void OnCopySource2Clipboard(wxCommandEvent& event) { event.Skip(); }
 
 public:
     wxStaticText* GetStaticTextLabelFrom() { return m_staticTextLabelFrom; }
@@ -398,6 +399,7 @@ public:
     wxPanel* GetPanelMessageHtml() { return m_panelMessageHtml; }
     wxTextCtrl* GetTextCtrlMessageSource() { return m_textCtrlMessageSource; }
     wxButton* GetButtonSaveMimeSource2File() { return m_buttonSaveMimeSource2File; }
+    wxButton* GetButtonCopySource2Clipboard() { return m_buttonCopySource2Clipboard; }
     wxPanel* GetPanelMessageSource() { return m_panelMessageSource; }
     wxTextCtrl* GetTextCtrlMimeStructure() { return m_textCtrlMimeStructure; }
     wxPanel* GetPanelMimeStructure() { return m_panelMimeStructure; }
@@ -451,6 +453,30 @@ public:
     wxTextCtrl* GetTextCtrlPassword() { return m_textCtrlPassword; }
     wxMsBasePasswordPromptDlg(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Password"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(500,300), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER);
     virtual ~wxMsBasePasswordPromptDlg();
+};
+
+
+class MyDialogNoUpdate : public wxDialog
+{
+protected:
+    wxStaticText* m_staticTextNoNewVersion;
+    wxStaticLine* m_staticLine2638;
+    wxStaticText* m_staticTextNote;
+    wxCheckBox* m_checkBoxCheckAtStartup;
+    wxStaticLine* m_staticLine44512;
+    wxStdDialogButtonSizer* m_stdBtnSizer26913;
+    wxButton* m_buttonOK;
+
+protected:
+
+public:
+    wxStaticText* GetStaticTextNoNewVersion() { return m_staticTextNoNewVersion; }
+    wxStaticLine* GetStaticLine2638() { return m_staticLine2638; }
+    wxStaticText* GetStaticTextNote() { return m_staticTextNote; }
+    wxCheckBox* GetCheckBoxCheckAtStartup() { return m_checkBoxCheckAtStartup; }
+    wxStaticLine* GetStaticLine44512() { return m_staticLine44512; }
+    MyDialogNoUpdate(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Update Check"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300,400), long style = wxDEFAULT_DIALOG_STYLE);
+    virtual ~MyDialogNoUpdate();
 };
 
 #endif

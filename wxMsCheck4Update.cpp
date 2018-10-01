@@ -35,48 +35,65 @@
 
 #include "wxMsFrameh.h"
 #include "wxMsUpdateCheckCurlh.h"
-#include "wxMsUpdateCheckDialogh.h"
-// -------------------------------------------------------------
+
+// ------------------------------------------------------------------
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
+// only good for MSVC
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
-
 // ------------------------------------------------------------------
 /**
  * Check for if we have the latest version.
  * Get the string from the download site and advise user
  * if a more recent version is available.
  * This rotine is called from the OnIdle() handler when the application
- * first starts up.
+ * first starts up, with bFromUser = false 
  * To allow the user to call for a check, we'll return the status
  * so we can advise the user if there is no newer version
+ * But note: if the remote site is down or can't be reached, then for the release
+ * version, we simply return.
+ * for the debug version, we want to throw up a bit more information
  */
 
-bool MyFrame::Check4Update()
+bool MyFrame::Check4Update( bool bFromUser )
 {
 #if defined( WANT_FILEVERSION )
-
   wxString wsUrl = CHECK_4_UPDATE_URL;
-
+  wxString wsUserAgent;
   wxString wsT;
   wxString wsVersion;
-  MyUpdateCurlHttpStatusObject MyCurl( wsUrl );
+
+  wsUserAgent.Printf( _T("%s-%d.%d.%d"),  USER_AGENT, giMajorVersion, giMinorVersion, giBuildNumber);
+  MyUpdateCurlHttpStatusObject MyCurl( wsUrl, wsUserAgent );
   wxString wsVersionHtml = MyCurl.getData();
   CURLcode code = MyCurl.GetReturnCode();
+  // CURLE_OK simply means that libcurl found the remote site
+  // it does not imply that it found the file we were looking for
   if( code != CURLE_OK )
   {
-    wsT.Printf( _("Got error %d from libcurl interface!\n%s"),
-      code, curl_easy_strerror(code) );
+#if defined (_DEBUG )
+    wsT.Printf( _("%s, Line: %ld - Got error %d %s from libcurl interface!\n") +
+      _("Likely cannot reach the remote site %s"), 
+      __FILE__, __LINE__, code, curl_easy_strerror(code), wsUrl
+    );
+    wsT.Printf( wsT );
     wxMessageBox( wsT, "Error", wxOK );
+#endif
     return false;
   }
+#if defined( _DEBUG )
+  if( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
+    wxLogMessage( wsVersionHtml );
+#endif
   // extract & clean up the string
   // first find the 'Latest Version" line
   int iStart = wsVersionHtml.Find( _T("Latest Version") );
@@ -109,7 +126,9 @@ bool MyFrame::Check4Update()
   wsBuild.ToLong( &lBuild );
   // set up the dialog so we can retrieve the format string for the version
   MyDialogUpdate dlg( this );
+  wxHyperlinkCtrl *pURL = dlg.GetHyperlinkwxMS();
   wxString wsTVersion = dlg.GetStaticTextVersion()->GetLabel();
+
   wsT.Printf( wsTVersion,(int)lMajor, (int)lMinor, (int)lBuild );
   if( (lMajor > giMajorVersion) ||
     ( (lMajor == giMajorVersion) && (lMinor > giMinorVersion) ) ||
@@ -117,8 +136,18 @@ bool MyFrame::Check4Update()
     (lBuild > giBuildNumber) ) )
   {
     dlg.GetStaticTextVersion()->SetLabel( wsT );
+    // check for updates at startup
+    dlg.GetCheckBoxCheckAtStartup()->SetValue(
+      g_iniPrefs.data[IE_OPT_AUTO_UPDATE_CHECK].dataCurrent.bVal );
     dlg.ShowModal();
+    // save the new state
+    g_iniPrefs.data[IE_OPT_AUTO_UPDATE_CHECK].dataCurrent.bVal =
+      dlg.GetCheckBoxCheckAtStartup()->GetValue();
     return true;
+  }
+  if ( bFromUser )
+  {
+    wxMessageBox( _T("You have the latest version!"), "Notice", wxOK );
   }
 #endif
   return false;
@@ -134,8 +163,20 @@ bool MyFrame::Check4Update()
 void MyFrame::OnCheck4Update(wxCommandEvent& event)
 {
 #if defined( WANT_FILEVERSION )
-  if( ! MyFrame::Check4Update() )
+  // suppress the extra "You have the latest version" message
+  //                    V
+  if( ! Check4Update( false ) )
   {
+#if 1 // new dialog
+    MyDialogNoUpdate dlg( this );
+    // check for updates at startup
+    dlg.GetCheckBoxCheckAtStartup()->SetValue(
+      g_iniPrefs.data[IE_OPT_AUTO_UPDATE_CHECK].dataCurrent.bVal );
+    dlg.ShowModal();
+    // save the new state
+    g_iniPrefs.data[IE_OPT_AUTO_UPDATE_CHECK].dataCurrent.bVal =
+      dlg.GetCheckBoxCheckAtStartup()->GetValue();
+#else
     wxString wsT;
     wsT.Printf( _("    No newer version found!\n") +
       _("    You are using version: %d.%d.%d.") +
@@ -144,6 +185,7 @@ void MyFrame::OnCheck4Update(wxCommandEvent& event)
       _("    enabled or disabled in the 'Options' dialog"),
       giMajorVersion, giMinorVersion, giBuildNumber );
       wxMessageBox( wsT, "Notice", wxOK );
+#endif
   }
 #endif
   event.Skip();

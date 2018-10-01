@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------
- * Name:        wxMsLogFileh.h
+ * Name:        wxMsFileLogh.h
  * Purpose:     Setup logging to a file
  *              Adapted from code at:
  * from: https://forums.wxwidgets.org/viewtopic.php?f=1&t=42551&p=172671&hilit=settimestamp#p172671

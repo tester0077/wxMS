@@ -29,6 +29,7 @@ public:
   wxString          m_wsMessage;
   wxString          m_wsContentType;
   wxString          m_wsContentSubType;
+  wxString          m_wsCharSet;    ///< from header 
   bool              m_bHaveMessage; ///< true if we have all of the message in memory
   bool              m_bNeedHeader;  ///< we are in neewd of the header information
   bool              m_bDelete;      ///< state of 'delete' checkbox
@@ -44,6 +45,7 @@ public:
     m_wsFrom = m_wsTo = m_wsSubject = m_wsDateSent = m_wsAttachments = wxEmptyString;
     m_wsAcctName    = m_wsHeader = m_wsMessage =
       m_wsContentType = m_wsContentSubType = wxEmptyString;
+    m_wsCharSet = _T("unknown");
     m_bHaveMessage  = false;
     m_bNeedHeader   = true;
     m_bDelete = m_bBounce = m_bBlacklist = false;

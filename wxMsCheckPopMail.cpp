@@ -38,14 +38,16 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
+// only good for MSVC
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
-
 // ------------------------------------------------------------------
 /**
  * We check all enabled accounts.
@@ -73,6 +75,10 @@ void MyFrame::Check4NewMail()
     return;
   }
 #endif
+#if defined( WANT_SEMAPHORE )
+  // make sure we're not in the middle of a current call
+  wxGetApp().m_semAllDone.Wait();
+#endif
   // clear the display - this seems to be the only way to have
   // this app behave on the slower machine Black
   ClearMessages();
@@ -81,6 +87,8 @@ void MyFrame::Check4NewMail()
   // then proceed & check for mail
   bool bAnyAccountEnabled = false;
   MyAccountList::iterator iter;
+  m_sz2Delete = 0;
+  SetStatusText( wxEmptyString, 1 ); // clear 'X Delete / Y Total'
 
   for ( iter = wxGetApp().m_AccountList.begin();
     iter != wxGetApp().m_AccountList.end(); ++iter )
@@ -89,6 +97,26 @@ void MyFrame::Check4NewMail()
     // cant use this test for accounts which do not save the password
     if ( pCurrent->m_bEnabled /*&& pCurrent->m_bServerAvailable*/ )
     {
+      // MUST check if the account is available
+      // if not, run one more test, if it succeeds, check mail
+      // else advise user
+      if ( ! pCurrent->m_bServerAvailable )
+      {
+        if ( ! CheckConnectivity() )
+        {
+          // see FS#2158 prevent multiple instances of this pop-up
+          // being shown over time & allow the deletion of the current one
+          // when the server becomes available again
+          wsT.Printf( _("POP3 server: \"%s\" for account: \"%s\" is off-line"), 
+            pCurrent->m_wsPopServerUrl, pCurrent->m_wsAcctName );
+          wxWindow *pWin0 = FindWindowByLabel(  _("Notice"), this );
+          wxWindow *pWin1 = FindWindowByLabel(  _("Notice") );
+          wxWindow *pWin2 = FindWindowByName(  _("Notice"), this );
+          SetStatusText( wsT, 0 );
+          wxMessageBox( wsT, _("Notice"), wxOK );
+          continue;
+        }
+      }
       // get any new messages from this account's POP3 server
       m_Pop3CommandData.sm_wsPop3ServerUrl = pCurrent->m_wsPopServerUrl;
       m_Pop3CommandData.sm_wsAccountName = pCurrent->m_wsAcctName;
@@ -118,8 +146,16 @@ void MyFrame::Check4NewMail()
       // will return when data is available
     }
   }
-//  DisplayMailList();
   SetStatusText( wxEmptyString, 0 );
+  if( ! m_bCancelled )
+  {
+    wsT.Printf( _(" %ld Delete/%ld Total"), m_sz2Delete, m_Pop3MsgList.size() );
+  }
+  else
+  {
+    wsT = _("Mail check cancelled!");
+  }
+  SetStatusText( wsT, 1 );
   m_gridMail->SelectRow( 0 );
   // reset the mail check timer
   m_iMailTimerTicks = 0;
@@ -136,7 +172,7 @@ void MyFrame::Check4NewMail()
  * This fumnction will also return false if there is missing information
  * for any account - may need refining for multiple valid/enabled accounts  //todo
  */
-bool MyFrame::GetAccountInfo(wxString &wsAccountList)
+bool MyFrame::GetAccountInfo()
 {
   wxString wsT;
   int iActiveAccounts = 0;
@@ -182,8 +218,19 @@ bool MyFrame::GetAccountInfo(wxString &wsAccountList)
       }
       iActiveAccounts++;
       bAnyAccountEnabled = true;
-
     }
+  }
+  // Modify the tool bar tip to show the status
+  wxToolBarToolBase* pTool = m_toolBarMain->FindById( wxID_CHECK_MAIL );
+  if( !bAnyAccountEnabled )
+  {
+    pTool->SetLongHelp( _("No accounts enabled!") );
+    pTool->SetShortHelp( _("No accounts enabled!") );
+  }
+  else
+  {
+    pTool->SetLongHelp( _("Check Selected Mail Account(s) (F5)") );
+    pTool->SetShortHelp( _("Check Mail") );
   }
   return bAnyAccountEnabled;
 }

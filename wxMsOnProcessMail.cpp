@@ -40,11 +40,14 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
+// only good for MSVC
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
 // ------------------------------------------------------------------
@@ -58,6 +61,10 @@
  */
 void MyFrame::OnProcessMail(wxCommandEvent& event)
 {
+#if defined( WANT_SEMAPHORE )
+  // make sure we're not in the middle of a current call to get mail
+  wxGetApp().m_semAllDone.Wait();
+#endif
 #if defined( _DEBUG )
   wxLogMessage(_T("1 - %s - ProcessMail - Line %ld"), __FILE__, __LINE__ );
 #endif
@@ -110,35 +117,17 @@ void MyFrame::OnProcessMail(wxCommandEvent& event)
 }
 
 // ------------------------------------------------------------------
+/**
+ * Note this thread is detached - can't wait on it.
+ * We set the status here and then need to test in every loop inside the thread.
+ */
 
 void MyFrame::OnMailCheckStop(wxCommandEvent& WXUNUSED(event) )
 {
-  GetThread()->Delete();
-//  wxCriticalSectionLocker lock( m_CS_Pop3MsgList );
-
-  m_bCancelled = true;
-  m_bStop  = true;
-  bool bLocalRun = true;
-  // m_bRunning is set false when thread exits
-   while ( bLocalRun )
   {
-    {
-      wxCriticalSectionLocker lock(m_CS_Pop3MsgList);
-      bLocalRun = m_bRunning;
-    }
-    ::wxYield();
-    ::wxMilliSleep( 10 );
+    wxCriticalSectionLocker lock(m_csCancelled);
+    m_bCancelled = true;
   }
-  m_Pop3MsgList.clear();
-  ClearMessages();
-  DisplayMailList();
-  wxLogMessage("Mail check aborted by user.");
-  // clear the progress gauge
-  GetGaugeProgress()->SetValue( 0 );
-#if defined( _MSC_VER )
-  // and the taskbar icon's as well
-  GetAppProgressInd()->SetValue( 0 );
-#endif
 }
 
 // ------------------------------- eof ------------------------------

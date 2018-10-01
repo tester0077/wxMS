@@ -126,14 +126,14 @@ void MyFrame::ThreadCurlPop3DeleteMessage( Pop3CommandData &ar_Pop3CommandData )
       wxLogMessage( _T("ThreadCurlPop3DeleteMessage UIDLs:\n  %s"), wsUidlResult );
     }
     // does user want us to quit?
-    if ( GetThread()->TestDestroy() )
+    if ( GetThread()->TestDestroy() || Cancelled() )
     {
       goto cleanup;
     }
     //   parse the UIDLs into a string array
     wxArrayString wasUidlLines;
     // split the long result into individual UIDLs
-    ThreadParseUidls( wsUidlResult, wasUidlLines );
+    ThreadParseUidls( wsUidlResult, wasUidlLines, _T("Delete") );
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< DELE commands
     // else, while we are still connected to the server, we now 
     // need to issue DELE commands to delete the messages corresponding
@@ -150,10 +150,41 @@ void MyFrame::ThreadCurlPop3DeleteMessage( Pop3CommandData &ar_Pop3CommandData )
       // "DELE nn zxcvbnm12345  ....." all chars' except spaces in UIDL
       wsUidl = wsCommand.AfterFirst( ' ' );
       // "nn zxcvbnm12345  ....." 
-      unsigned int uiSeq = GetSeqNoFromUidl( wsUidl, wasUidlLines );
-      wxASSERT( uiSeq );  // MUST be positive, > 0
+      long lSeq = GetSeqNoFromUidl( wsUidl, wasUidlLines );
+#if 1
+      if ( lSeq <= 0 )
+      {
+        // if a message we think exists on the server has been deleted
+        // possibly by another user loggong in or for any reason
+        // by the server itself, we will get to this point.
+        // All we can do is to carry on,
+        // BUT, we need to clean up the user display, 
+        // so wepost a message to update the mail grid display
+        // which ends up calling MyFrame::OnUpdateDisplay()
+        wxThreadEvent event( wxEVT_THREAD, POP3_MSG_UPDATE_EVENT );
+        wxString wsT;
+        event.SetPayload( (MyPop3MsgElement *)NULL );
+        event.SetInt( lSeq - 1 );   // index
+  //      event.SetExtraLong( 5  );  // not used for now
+        wsT.Printf( _T("DELE\u00AE%s\u00AE%s"), ar_Pop3CommandData.sm_wsAccountName,wsUidl );  
+        event.SetString( wsT );   // command string
+        wxQueueEvent( this, event.Clone() );
+        continue;
+      }
+#if 1
+#else
+      if ( lSeq <= 0 )
+      {
+        wxString wsT;
+        wxBell(); wxBell(); wxBell();
+        wxLogMessage(
+          _T("!!! %s %ld: GetSeqNoFromUidl failed:\n    %s"), __FILE__, __LINE__, wsUidl );
+        continue;
+      }
+#endif
+#endif
       // Set the command with the proper message number
-      wsCommand.Printf( _T("DELE %d"), uiSeq );
+      wsCommand.Printf( _T("DELE %d"), lSeq );
       curl_easy_setopt( pCurl, CURLOPT_CUSTOMREQUEST, wsCommand.mb_str(wxConvUTF8).data());
       /* Perform the custom request */
       res = curl_easy_perform( pCurl );
@@ -175,19 +206,20 @@ void MyFrame::ThreadCurlPop3DeleteMessage( Pop3CommandData &ar_Pop3CommandData )
       wxThreadEvent event( wxEVT_THREAD, POP3_MSG_UPDATE_EVENT );
       wxString wsT;
       event.SetPayload( (MyPop3MsgElement *)NULL );
-      event.SetInt( uiSeq - 1 );   // index
+      event.SetInt( lSeq - 1 );   // index
 //      event.SetExtraLong( 5  );  // not used for now
       wsT.Printf( _T("DELE\u00AE%s\u00AE%s"), ar_Pop3CommandData.sm_wsAccountName,wsUidl );  
       event.SetString( wsT );   // command string
       wxQueueEvent( this, event.Clone() );
-
+#if defined( WANT_UIDL_ASSERT )
       // seems needed to give slower machines time to update the GUI
       // and still lets us delete a number of messages in one call
-      // there are other ways to to thids, but .....
-      wxThread::Sleep( 10 );
+      // there are other ways to to this, but .....
+      wxThread::Sleep( 50 );
+#endif
     }
     // does user want us to quit?
-    if ( GetThread()->TestDestroy() )
+    if ( GetThread()->TestDestroy() || Cancelled() )
       return;
   }
   // Always cleanup

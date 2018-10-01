@@ -129,6 +129,101 @@ long MyFrame::ShowOptions( long lPage )
     {
       GetMailTimerPtr()->Start( 60 * 1000 ); 
     }
+#if defined( WANT_AUTO_START )
+    // application auto-start needs to ne handled here;
+    // either set it up or remove any current link 
+    // LNK file is expected to be in: 
+    // C:\Users\arnold\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\wxMS.lnk
+    
+    wxString wsAppDataDir = wxStandardPaths::Get().GetUserDataDir();
+    wsAppDataDir = wxStandardPaths::Get().GetUserLocalDataDir();
+    // is expected to return: C:\Users\arnold\AppData\Local\wxMS
+//    wsAppDataDir = wxStandardPaths::Get().GetDataDir(); // gets executable dir
+    wxFileName wfnLinkDir;
+    wxString wsLinkDir;
+    wfnLinkDir.AssignDir( wsAppDataDir );
+    wxArrayString wasDirs = wfnLinkDir.GetDirs();
+    wsLinkDir = wfnLinkDir.GetPath();
+    // we want to drop \Local\wxMS
+    wfnLinkDir.RemoveLastDir();
+#if defined( _DEBUG )
+    wsLinkDir = wfnLinkDir.GetPath();
+#endif
+    wfnLinkDir.RemoveLastDir();
+    wsLinkDir = wfnLinkDir.GetPath();
+    // and we need to add Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+    wfnLinkDir.AppendDir( _T("Roaming") );
+#if defined( _DEBUG )
+    wsLinkDir = wfnLinkDir.GetPath();
+#endif
+    wfnLinkDir.AppendDir( _T("Microsoft") );
+#if defined( _DEBUG )
+    wsLinkDir = wfnLinkDir.GetPath();
+#endif
+    wfnLinkDir.AppendDir( _T("Windows") );
+#if defined( _DEBUG )
+    wsLinkDir = wfnLinkDir.GetPath();
+#endif
+    wfnLinkDir.AppendDir( _T("Start Menu") );
+#if defined( _DEBUG )
+    wsLinkDir = wfnLinkDir.GetPath();
+#endif
+    wfnLinkDir.AppendDir( _T("Programs") );
+#if defined( _DEBUG )
+    wsLinkDir = wfnLinkDir.GetPath();
+#endif
+    wfnLinkDir.AppendDir( _T("Startup") );
+    wsLinkDir = wfnLinkDir.GetPath();
+    
+    bool bHaveLink = false;
+    if ( g_iniPrefs.data[IE_AUTO_START].dataCurrent.bVal )
+    {
+      // Note: this uses the path for the currently executing app.
+      // i.e. whne debugging under MSVC IDE, it uses the full path
+      // to the exectable: D:\pkg\wx\MSVC2015\_3.1-2010\HummerSVN\wxMS-Curl\DebUniStat\wxMS.exe
+      wxString wsExeFile;
+      wsExeFile = wxStandardPaths::Get().GetExecutablePath();
+      // create a link 
+      bHaveLink = wfnLinkDir.DirExists();
+      // set the link name
+      wfnLinkDir.SetFullName( _T("wxMS.lnk") );
+      wsLinkDir = wfnLinkDir.GetFullPath();
+      if ( wfnLinkDir.FileExists() )
+      {
+        wxLogMessage( _("File %s exists, nothing to do!"), wsLinkDir );
+      }
+      else
+      {
+        // shows as shortcut comment
+        wxString wsComment( _T("wxMS POP3 Mail Screener"));
+        // we need to create the link
+        // lpszPathObj  - Address of a buffer that contains the path of the object,
+        //                including the file name.
+        // lpszPathLink - Address of a buffer that contains the path where the 
+        //                Shell link is to be stored, including the file name.
+        // lpszDesc     - Address of a buffer that contains a description of the 
+        //                Shell link, stored in the Comment field of the link
+        //                properties.
+        HRESULT hRes =
+          CreateLink( wsExeFile.wc_str(), wsLinkDir.mb_str(), wsComment.c_str() );
+        wxLogMessage( _("Created file %s, bRet: %d"), wsLinkDir, hRes );
+      }
+    }
+    else
+    {
+      bool bRet;
+      // link exists, user wants it removed
+      bHaveLink = wfnLinkDir.DirExists();
+      // set the link name
+      wfnLinkDir.SetFullName( _T("wxMS.lnk") );
+      wsLinkDir = wfnLinkDir.GetFullPath();
+      if ( wfnLinkDir.FileExists() )
+      {
+         bRet = ::wxRemoveFile( wsLinkDir );
+         wxLogMessage( _("Removing file %s, bRet: %s"), wsLinkDir, bRet ? _("success") : _("failed") );
+      }
+    }
+#endif
   }
   else
   {

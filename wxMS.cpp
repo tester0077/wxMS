@@ -79,7 +79,9 @@ int giMajorVersion = 0;
 int giMinorVersion = 0;
 int giBuildNumber = 0;
 #endif
-
+#if defined( WANT_SINGLE_INSTANCE )
+wxSingleInstanceChecker *gp_checker;
+#endif
 // ------------------------------------------------------------------
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST( MyAccountList );
@@ -101,7 +103,10 @@ wxBEGIN_EVENT_TABLE(MyApp, wxApp)
     EVT_DIALUP_CONNECTED(MyApp::OnConnected)
     EVT_DIALUP_DISCONNECTED(MyApp::OnConnected)
 #endif
-//  EVT_CLOSE( MyFrame::OnClose )
+#if defined( WANT_NEW_STOP )
+  EVT_QUERY_END_SESSION(  MyApp::OnAppQueryEndSession )
+  EVT_END_SESSION(MyApp::OnAppEndSession)
+#endif
 wxEND_EVENT_TABLE()
 
 // ------------------------------------------------------------------
@@ -111,13 +116,15 @@ MyApp::MyApp()
   m_frame = NULL;
   m_pConfig = NULL;
 #if defined( WANT_SINGLE_INSTANCE )
-  m_checker = NULL;
+  gp_checker = NULL;
 #endif
 #if defined( WANT_LOG_CHAIN )
   m_pLogChain = NULL;
   m_pAppLog = NULL;
 #endif
+#if defined( WANT_NEW_STOP )
   m_bShuttingDown = false;
+#endif
   m_pFilterConfig = NULL;
   m_pLogWindow = NULL;
   m_bSilentMode = false;
@@ -144,11 +151,16 @@ MyApp::MyApp()
 //-------------------------------------------------------------------
 // Public methods
 //-------------------------------------------------------------------
-#if defined( WANT_SINGLE_INSTANCE )
-wxSingleInstanceChecker *m_checker;
+
 MyApp::~MyApp()
 {
-  delete m_checker;
+#if defined( WANT_SINGLE_INSTANCE )
+  if ( gp_checker )
+  {
+    delete gp_checker;
+    gp_checker = NULL;
+  }
+#endif
 #if defined( WANT_TASKBAR )
   delete m_pTaskBarIcon;
 #endif
@@ -158,13 +170,20 @@ MyApp::~MyApp()
 #endif
   return;
 }
-#else
-  MyApp::~MyApp(){;}
-#endif
 
 // ------------------------------------------------------------------
 /**
- * Only get here from red 'x' on main frame.
+ * Only get here from red 'x' on main frame or
+ * when the system shuts down and sends the  message to OnAppEndSession().
+ * Therefore any saving of critical data MUST be done here   !!!!!!!!!!!!!!!!!!!!!!
+ * Stopping the threads needs/ought to be done in the main frame dtor
+ */
+/** More info from an old discussion ( 2008  & msw 2.8.7
+ * from: http://wxwidgets.10942.n7.nabble.com/msw-2-8-7-Problem-saving-application-settings-when-system-is-shut-down-td24744.html
+ * If this code makes it into the library, maybe it should be mentioned
+ * in the docs that the wxApp dtor will not get called if the
+ * WM_ENDSESSION is received, so if anyone has important cleanup code in
+ * his dtor, he can move the code to wxApp::OnExit(). 
  */
 int MyApp::OnExit()
 {
@@ -174,7 +193,45 @@ int MyApp::OnExit()
   SaveFilterConfig();
   return 0;
 }
+#if defined( WANT_NEW_STOP )
 
+// ------------------------------------------------------------------
+/**
+ * Called when the OS is trying to kill the application and it is called
+ * before OnAppEndSession()
+ * In either case we have 5 seconds to clean up, before the shut down is forced
+ * see: https://docs.microsoft.com/en-us/windows/desktop/Shutdown/shutdown-changes-for-windows-vista
+ */
+void MyApp::OnAppQueryEndSession(wxCloseEvent& event)
+{
+  // called when the system is shutting down
+  // can be tested using 
+  // C:\Program Files (x86)\Windows Kits\10\App Certification Kit\rmlogotest.exe"
+  // which needs the process ID
+  // see also comments in wxCloseEvent handler
+  // it seems we can also use 
+  // GetLoggingOff () const  
+  // Returns true if the user is just logging off or false if the system is shutting down. 
+  // This method can only be called for end session and query end session events, it doesn't 
+  // make sense for close window event. 
+  // if multi-threading, here we can check and stop all threads if any are running.
+  // see the thread example in MSVC 2015/examples
+  // 
+#if defined( WANT_NEW_STOP )
+  m_bShuttingDown = true;
+#endif
+
+  // all shutdown related work is best done in main frame dtor
+	event.Skip();
+
+}
+
+// ------------------------------------------------------------------
+void MyApp::OnAppEndSession(wxCloseEvent& event)
+{
+	event.Skip();
+}
+#endif
 // ------------------------------------------------------------------
 int MyApp::OnRun()
 {
@@ -187,7 +244,9 @@ bool MyApp::OnInit()
 {
   theApp = this;
   m_dial = NULL;
-
+#if defined( WANT_LOG_CHAIN )
+  m_pLogChain = NULL;
+#endif
   // stops the warning dialog from libpng "iCCP: known incorrect sRGB profile
   wxLogNull logNo;
   ::wxInitAllImageHandlers();  // IMPORTANT for wxCrafter
@@ -281,12 +340,19 @@ tryAgain:
 #endif
 #if defined( WANT_SINGLE_INSTANCE )
   const wxString name = wxString::Format(_T("%s-%s"), m_wsAppName, wxGetUserId() );
-  m_checker = new wxSingleInstanceChecker(name);
-  if ( m_checker->IsAnotherRunning() )
+  gp_checker = new wxSingleInstanceChecker(name);
+  if ( gp_checker->IsAnotherRunning() )
   {
-    wxLogError(_("Another program instance is already running, aborting."));
-    delete m_checker; // OnExit() won't be called if we return false
-    m_checker = NULL;
+    wxLogError( _("Another program instance is already running, aborting.") );
+    // does not show either, because the debugger termiates as well in this case
+    wxLogDebug( _("Another program instance is already running, aborting.") );
+    wxBell();
+    wxString wsMsg;
+    wsMsg.Printf(  _("Another program instance of %s-%s is already running, aborting."),
+      m_wsAppName,  wxGetUserId() );
+    wxMessageBox( wsMsg, _("Error"), wxOK );
+    delete gp_checker; // OnExit() won't be called if we return false
+    gp_checker = NULL;
     return false;
   }
 #endif
@@ -369,11 +435,48 @@ tryAgain:
   RestoreConfig();
   if( g_iniPrefs.data[IE_OPT_LAST_CONF_FILE].dataCurrent.wsVal.IsEmpty() )
     g_iniPrefs.data[IE_OPT_LAST_CONF_FILE].dataCurrent.wsVal = m_wsConfigDir;
+#if defined( WANT_SCALING )
+  // shrink app frame at startup is new reso;ution is smaller than old
+  int x, y;
+  wxDisplaySize( &x, &y );
+  if ( x < g_iniPrefs.data[IE_RESOLUTION_X].dataCurrent.lVal )
+  {
+    g_iniPrefs.data[IE_FRAME_W].dataCurrent.lVal *= 
+      (x / g_iniPrefs.data[IE_RESOLUTION_X].dataCurrent.lVal);
+  }
+  if ( y < g_iniPrefs.data[IE_RESOLUTION_Y].dataCurrent.lVal )
+  {
+    g_iniPrefs.data[IE_FRAME_W].dataCurrent.lVal *= 
+      (y / g_iniPrefs.data[IE_RESOLUTION_Y].dataCurrent.lVal);
+  }
+#endif
+#if defined( WANT_MONITOR_CHECK )
+  const size_t count = wxDisplay::GetCount();
+  int  iWin = wxDisplay::GetFromWindow( m_frame );
+  // sets both size & position
+  m_frame->SetSize( g_iniPrefs.data[IE_FRAME_X].dataCurrent.lVal, 
+    g_iniPrefs.data[IE_FRAME_Y].dataCurrent.lVal, 
+    g_iniPrefs.data[IE_FRAME_W].dataCurrent.lVal,
+    g_iniPrefs.data[IE_FRAME_H].dataCurrent.lVal );
+  iWin = wxDisplay::GetFromWindow( m_frame );
+  if ( iWin == wxNOT_FOUND )    // the coordinates are on a different screen
+  {
+    // repositon it to the primary screen, whichever that ends up as.
+    // in this way, I expect that the user can then carry on, resizing
+    // and repositioning as needed
+    m_frame->SetSize( 10, 10, 
+    g_iniPrefs.data[IE_FRAME_W].dataCurrent.lVal,
+    g_iniPrefs.data[IE_FRAME_H].dataCurrent.lVal );
+  }
+#else
   m_frame->SetSize( g_iniPrefs.data[IE_FRAME_X].dataCurrent.lVal,
     g_iniPrefs.data[IE_FRAME_Y].dataCurrent.lVal,
     g_iniPrefs.data[IE_FRAME_W].dataCurrent.lVal,
     g_iniPrefs.data[IE_FRAME_H].dataCurrent.lVal );
+#endif
   RestoreAccounts();
+  // see if any accounts are active/enabled
+  m_frame->m_bAnyAccountsActive = m_frame->GetAccountInfo();
   m_frame->RestoreColWidths();
   m_frame->RestoreColLabels();
   m_frame->InitializeMailGrid();
@@ -399,17 +502,18 @@ tryAgain:
   m_wsCurLogFileName = g_iniPrefs.data[IE_LOG_DIR_PATH].dataCurrent.wsVal + _T("/") + WS_LOG_FILE_NAME;
   if ( g_iniPrefs.data[IE_LOG_FILE_WANTED].dataCurrent.bVal )
   {
+    // log size limit & rotation is handled by called routine
     CreateNewLog();
   }
 #endif    // WANT_LOG_CHAIN
   // Show the frame as it's created initially hidden.
   m_frame->Show(true);
   m_frame->GetGaugeProgress()->SetValue( 0 );
-  // start the mail check timer if user wants it so
-  if ( g_iniPrefs.data[IE_SCHEDULE_MAIL_CHECK].dataCurrent.bVal )
-  {
-    m_frame->GetMailTimerPtr()->Start( 60 * 1000 );
-  }
+  
+//  ::wxYield();  // causes crash
+  // adding this delay here does not show tool bar icons
+  m_frame->Refresh();
+  ::wxMilliSleep( 500 ); // give GUI a chance to settle before we check mail
 #if defined( WANT_MSVC_INTERNET_TEST )
   // Init dial up manager
   m_dial = wxDialUpManager::Create();
@@ -419,7 +523,6 @@ tryAgain:
 #if wxUSE_LOG
       wxLog::GetActiveTarget()->Flush();
 #endif // wxUSE_LOG
-
       // do it here, OnExit() won't be called
       delete m_dial;
       m_dial = NULL;
@@ -430,7 +533,7 @@ tryAgain:
   if( m_frame->CheckConnectivity())
   {
     if( g_iniPrefs.data[IE_OPT_AUTO_UPDATE_CHECK].dataCurrent.bVal )
-      m_frame->Check4Update();
+      m_frame->Check4Update( false );
     // check & download mail at start up?
     if( g_iniPrefs.data[IE_CHECK_MAIL_STARTUP].dataCurrent.bVal )
     {
@@ -440,14 +543,19 @@ tryAgain:
   }
 #endif
 #if defined( _MSC_VER )
+#if !defined( WANT_STARTUP_IN_IDLE )
+  // if this is used the tool bar will NOT show until after the mail check returns.
   if( IsInternetAvailable() )
   {
     if( g_iniPrefs.data[IE_OPT_AUTO_UPDATE_CHECK].dataCurrent.bVal )
-      m_frame->Check4Update();
+      m_frame->Check4Update( false );
     // check & download mail at start up?
     if( g_iniPrefs.data[IE_CHECK_MAIL_STARTUP].dataCurrent.bVal )
     {
       // check default account as left by user last time
+//      ::wxYield();
+//      m_frame->Refresh();
+//      ::wxSleep( 10 );
       m_frame->Check4NewMail();
     }
   }
@@ -458,6 +566,12 @@ tryAgain:
     //wxLogMessage( wsT );  // does not show
   }
 #endif
+#endif
+  // start the mail check timer if user wants it so
+  if ( g_iniPrefs.data[IE_SCHEDULE_MAIL_CHECK].dataCurrent.bVal )
+  {
+    m_frame->GetMailTimerPtr()->Start( 60 * 1000 );
+  }
   // Return true to tell program to continue (false would terminate).
   return true;
 }

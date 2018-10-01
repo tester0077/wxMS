@@ -214,10 +214,10 @@ void MyFrame::ThreadCurlPop3GetNewMessages( Pop3CommandData &ar_Pop3CommandData 
     }
     if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
     {
-      wxLogMessage( _T("UIDLs:  %s\n"), wsUidlResult );
+      wxLogMessage( _T("UIDLs:  %s"), wsUidlResult );
     }
     // does user want us to quit?
-    if ( GetThread()->TestDestroy() )
+    if ( GetThread()->TestDestroy() || Cancelled() )
     {
       goto cleanup;
     }
@@ -254,7 +254,7 @@ void MyFrame::ThreadCurlPop3GetNewMessages( Pop3CommandData &ar_Pop3CommandData 
     while ( wasUidlLines.GetCount() )
     {
       // does user want us to quit?
-      if ( GetThread()->TestDestroy() )
+      if ( GetThread()->TestDestroy() || Cancelled() )
       {
         goto cleanup;
       }
@@ -273,9 +273,20 @@ void MyFrame::ThreadCurlPop3GetNewMessages( Pop3CommandData &ar_Pop3CommandData 
       SetStatusText( wsT1, 0);
       wsUidl = wasUidlLines[0];
       ulSize = walSizes[0];
-      unsigned int uiSeq = GetSeqNoFromUidl( wsUidl,  wasUidlLines );
-      wxASSERT( uiSeq );  // MUST be positive, > 0
-      wsCommand.Printf( _T("TOP %d %ld"),  uiSeq, m_lNTopLines );
+      long lSeq = GetSeqNoFromUidl( wsUidl, wasUidlLines );
+#if 1
+      if ( lSeq <= 0 )
+      {
+        wxString wsT;
+        wxBell(); wxBell(); wxBell();
+        wxLogMessage(
+          _T("!!! %s: GetSeqNoFromUidl %ld failed:\n    %s"), __FILE__, __LINE__, wsUidl );
+        continue;
+      }
+#else
+      wxASSERT( lSeq );  // MUST be positive, > 0
+#endif
+      wsCommand.Printf( _T("TOP %ld %ld"),  lSeq, m_lNTopLines );
       if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
       {
         wxLogMessage( wsCommand );
@@ -296,7 +307,7 @@ void MyFrame::ThreadCurlPop3GetNewMessages( Pop3CommandData &ar_Pop3CommandData 
         goto cleanup;
       }
       // does user want us to quit?
-      if ( GetThread()->TestDestroy() )
+      if ( GetThread()->TestDestroy() || Cancelled() )
       {
         goto cleanup;
       }
@@ -311,7 +322,7 @@ void MyFrame::ThreadCurlPop3GetNewMessages( Pop3CommandData &ar_Pop3CommandData 
       }
       if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
       {
-        wxLogMessage( _T("Header: %d\n%s"), uiSeq, wsHeader );
+        wxLogMessage( _T("Header: %ld%s"), lSeq, wsHeader );
       }
       MyPop3MsgElement *pEl =  new MyPop3MsgElement( wsUidl, ulSize );
       pEl->m_wsUidl = wsHeader;
@@ -396,6 +407,17 @@ void MyFrame::ThreadParseUidlData( Pop3CommandData &ar_Pop3CommandData,
       continue; // line does not start with a numeric char, skip it
     ar_wasUidls.Add( wsLine );
     wsLine = wsLine.AfterFirst( ' ' );
+    if ( wsLine.Find( ' ' ) != wxNOT_FOUND )
+    {
+      wxString wsT;
+      wsT.Printf( 
+        _T("Bad data received from the POP3 server \"%s\"\n") 
+        _T("for account \"%s\"\n")
+        _T("The UIDL \"%s\n contains spaces!"), 
+        ar_Pop3CommandData.sm_wsPop3ServerUrl, 
+        ar_Pop3CommandData.sm_wsAccountName, wsLine );
+      wxMessageBox( wsT, "Error", wxOK );
+    }
     wasUidls.Add( wsLine );
     wxASSERT( ulSeqNo == (unsigned long)j );
     j++;
@@ -430,7 +452,7 @@ void MyFrame::ThreadParseUidlData( Pop3CommandData &ar_Pop3CommandData,
   size_t n = m_Pop3MsgList.size();
   if ( m_Pop3MsgList.size() == 0 )
     return;
-  // run throught the list in m_Pop3MsgList and remove any lines in the current
+  // run through the list in m_Pop3MsgList and remove any lines in the current
   // display which no longer have a corresponding UIDL on the server.
   // Those have been removed one way or another.
   for (std::list<MyPop3MsgElement>::iterator it = m_Pop3MsgList.begin();
@@ -520,14 +542,27 @@ restart:
   *
   * My note: char range 0x21 - 0x7e excludes spaces
   * My test server from Pablo Software adheres to this restriction,
-  * even though it used the subject line as UIDL, but replaces all
-  * spaces with dashes
+  * even though it uses the subject line as UIDL, but replaces all
+  * spaces with dashes - but only if it receives the message directly.
+  * When I copy messages directly to the mail box directory, it !!!!!!
+  * is up to ME to make sure all spaces are removed.            !!!!!!
  */
-unsigned int MyFrame::GetSeqNoFromUidl( wxString a_wsUidl, wxArrayString &ar_wasUidls )
+long MyFrame::GetSeqNoFromUidl( wxString a_wsUidl, wxArrayString &ar_wasUidls )
 {
   unsigned long ulSeq = 0;
   wxString wsSeq;
   wxString wsServerUidl;
+  wxString wsT;
+#if 1
+  // check for some extra long lines I seem to have found in log from Black
+  //(2018-07-24 10:59:16) Message: !!! wxMsThreadCurlPop3DeleteMsg.cpp 160: GetSeqNoFromUidl failed:
+  //  5 109753.A1827UWSvJwnE9PpjAfIeOI85UtsSG4SzxNElrMl6RA= [MyFrame::ThreadCurlPop3DeleteMessage in wxMsThreadCurlPop3DeleteMsg.cpp(159)]
+  if( a_wsUidl.Length() > (70 + 5 ) )
+  {
+    wxLogMessage( _T("???? Line: %ld, File: %s  a_wsUidl: %s"), 
+           __LINE__, __FILE__,  a_wsUidl );
+  }
+#endif
   if ( a_wsUidl.Find( ' ' ) != wxNOT_FOUND )
     a_wsUidl = a_wsUidl.AfterFirst( ' ' );
   for ( unsigned int i = 0; i < ar_wasUidls.GetCount();  i++ )
@@ -537,17 +572,66 @@ unsigned int MyFrame::GetSeqNoFromUidl( wxString a_wsUidl, wxArrayString &ar_was
     {
       wsSeq = ar_wasUidls[i].BeforeFirst( ' ' );
       bool bRet = wsSeq.ToULong( &ulSeq );
-      wxASSERT( bRet );
+#if 1
+      if( !bRet ) // conversion problem
+      {
+        wxLogMessage( _T("Line: %ld, File: %s bRet: %s, i: %d wsServerUidl: %s, a_wsUidl: %s"), 
+           __LINE__, __FILE__, bRet ? _T("true") : _T("false"), i, wsServerUidl, a_wsUidl );
+        for ( unsigned int ii = 0; ii < ar_wasUidls.GetCount();  ii++ )
+        {
+          wxLogMessage( _T("  -  i: %d %s"), ii, ar_wasUidls[ii] );
+        }
+        wxGetApp().OnFatalException();
+        wxASSERT_MSG( true, _T("Serious error: please check the log window for details!"));
+      }
+#else
+      wsT.Printf( _T("!!! Line: %ld, File: %s: n: %d, a_wsUidl: %s,  i: %d, %s "), 
+        __LINE__, __FILE__, ar_wasUidls.GetCount(), a_wsUidl, i, ar_wasUidls[i] );
+      wxASSERT_MSG( bRet, wsT );
+#endif
       wxUnusedVar( bRet );  // keep linux compiler happy in release mode
-      wxASSERT( ulSeq );  // MUST be positive, > 0
-      return (unsigned int)ulSeq;
+#if 1
+      if( ulSeq <= 0) // MUST be positive, > 0
+      {
+        wxLogMessage( _T("!!! Line: %ld, File: %s bRet: %s, i: %d wsServerUidl: %s, a_wsUidl: %s"), 
+           __LINE__, __FILE__, bRet ? _T("true") : _T("false"), i, wsServerUidl, a_wsUidl );
+        for ( unsigned int ii = 0; ii < ar_wasUidls.GetCount();  ii++ )
+        {
+          wxLogMessage( _T("  -  i: %d %s"), ii, ar_wasUidls[ii] );
+        }
+        wxGetApp().OnFatalException();
+        wxASSERT_MSG( true, _T("Serious error: please check the log window for details!"));
+      }
+#else
+      wxASSERT_MSG( ulSeq, wsT );  // MUST be positive, > 0
+#endif
+      return ulSeq;
     }
   }
+#if 1
+  return -1;  // no match found
+#else
   // seems that if we get here we have a problem ????
   // throwing the assertion here will be closer to the real issue
   // than waiting til we return
-  wxASSERT( ulSeq );  // MUST be positive, > 0
+
+#if 1
+    if( ulSeq <= 0) // MUST be positive, > 0
+    {
+      wxLogMessage( _T("!!! Line: %ld, File: %s wsServerUidl: %s, a_wsUidl: %s"), 
+          __LINE__, __FILE__, wsServerUidl, a_wsUidl );
+      for ( unsigned int ii = 0; ii < ar_wasUidls.GetCount();  ii++ )
+      {
+        wxLogMessage( _T("  -  i: %d %s"), ii, ar_wasUidls[ii] );
+      }
+      wxGetApp().OnFatalException();
+      wxASSERT_MSG( true, _T("Serious error: please check the log window for details!"));
+    }
+#else
+///  wxASSERT( ulSeq );  // MUST be positive, > 0
+#endif
   return (unsigned int)ulSeq;
+#endif
 }
 
 // ------------------------------- eof ------------------------------

@@ -44,8 +44,10 @@
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
 // ------------------------------------------------------------------

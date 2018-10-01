@@ -56,7 +56,7 @@
 class wxRfc2047;
 /**
  * Called from the thread event code used to update the mail grid display
- * when ever a new header has been downloaded from the mail server.
+ * whenever a new header has been downloaded from the mail server.
  */
 // ------------------------------------------------------------------
 void MyFrame::Add1Pop3Header2MsgList( size_t a_szIndex, wxString a_wsAccount )
@@ -85,10 +85,13 @@ void MyFrame::Add1Pop3Header2MsgList( size_t a_szIndex, wxString a_wsAccount )
         }
         it->m_wsAcctName = a_wsAccount;
         // extract the header data of interest and
-        // setup the corrsponding fields in the message list
+        // setup the corresponding fields in the message list
+        wxString charset = wxRfc2231::Decode(me.header().contentType().paramList(),
+                                        _T("charset"));
         ContentType ct = me.header().contentType();
         it->m_wsContentType = ct.type();
         it->m_wsContentSubType = ct.subtype();
+        it->m_wsCharSet = charset;
         /* Extract all to addresses */
         std::vector<mimetic::Address>::iterator to_it;
         it->m_wsTo = wxEmptyString;
@@ -129,11 +132,13 @@ void MyFrame::Add1Pop3Header2MsgList( size_t a_szIndex, wxString a_wsAccount )
           wsT2 = hbit->value();
           if( wsT1.MakeUpper().IsSameAs( _T("FROM")) )
           {
+#if 0
             if( wsT2.StartsWith( _T("\"" ) ) )
             {
               wsT2 = wsT2.Mid( 1 );
               wsT2.RemoveLast();
             }
+#endif
             it->m_wsFrom = wxRfc2047::Decode( wsT2 );
           }
           else if (  wsT1.MakeUpper().IsSameAs( _T("TO")) )
@@ -159,6 +164,11 @@ void MyFrame::Add1Pop3Header2MsgList( size_t a_szIndex, wxString a_wsAccount )
           }
           else if (  wsT1.MakeUpper().IsSameAs( _T("SUBJECT")) )
           {
+            if( it->m_wsCharSet.IsSameAs( _T("UTF-8")))
+            {
+              wxString wsTT = wxString::FromUTF8( wsT2 );
+              wsT2 = wsTT;
+            }
             it->m_wsSubject =  wxRfc2047::Decode( wsT2 );
           }
 //          else if ( wsT1.IsSameAs( _T("REPLY_TO")))

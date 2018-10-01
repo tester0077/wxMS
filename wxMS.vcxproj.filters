@@ -156,6 +156,9 @@
     <ClCompile Include="wxMsPop3AdvancedOptionsDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wxMsShortcutProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wxMsCmdlineh.h">

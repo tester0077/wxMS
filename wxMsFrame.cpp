@@ -105,7 +105,9 @@ MyFrame::MyFrame( wxWindow* parent )
   m_walColWidths.Clear();
   m_walColWidths.Empty();
   m_bStop = false;
-
+  m_iNIdleCalls = 0;
+  m_bAnyAccountsActive = false;
+  m_bNeedStartupMailCheck = m_bNeedStartupNewversionCheck = true;
 #if defined( _MSC_VER )
   m_pAppProgress = NULL;
   m_pAppProgress = new  wxAppProgressIndicator(this);
@@ -119,6 +121,8 @@ MyFrame::MyFrame( wxWindow* parent )
     m_pAppProgress = NULL;
     m_bHaveAppProgress = false;
   }
+  m_toolBarMain->Refresh();
+//  wxSleep( 5 );
 #endif
   // 1 minute interval
   m_iMailTimerTicks = 0;
@@ -167,7 +171,6 @@ MyFrame::MyFrame( wxWindow* parent )
   // help file now is in the %USER%/AppData/Roaming   for Vista
   wxString wsCurPath = wxStandardPaths::Get().GetResourcesDir();
   wxFileName wfnHelpFile;
-//  wxString wsTT = wxGetApp().m_wsConfigDir;
   wfnHelpFile.AssignDir( wxGetApp().m_wsConfigDir );
   // and construct the help file name
   wxString wsHelpFile = wxGetApp().m_wsAppName;
@@ -264,7 +267,7 @@ void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 {
   Destroy();
 }
-
+#if 0   // neither used nor called
 // ------------------------------------------------------------------
 /**
  * If CanVeto() returns false, the system is shutting down.
@@ -272,21 +275,50 @@ void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
  */
 void MyFrame::OnClose( wxCloseEvent& event )
 {
-  if ( event.CanVeto() )
+  if ( event.CanVeto() )  // is the app itself shutting donw
   {
     if ( GetThread() &&      // DoStartALongTask() may have not been called
        GetThread()->IsRunning() )
     {
-       GetThread()->Wait();
+      {
+        wxCriticalSectionLocker lock(m_csCancelled);
+        m_bCancelled = true;
+      }
+      GetThread()->Wait();
     }
   }
   Destroy();
 }
-
+#endif
 //-----------------------------------------------------------------------------
 
 MyFrame::~MyFrame()
 {
+#if defined( WANT_NEW_STOP )
+  wxGetApp().m_bShuttingDown = true;
+
+  // needs to be done in the main frame dtor
+  
+  // here we don't care whether it is the app only or of the OS requested a shutdown
+//  if ( event.CanVeto() )  // is the app itself shutting down
+  {
+    if (GetThread() &&      // DoStartTask() may have not been called
+       GetThread()->IsRunning() )
+    {
+      {
+        wxCriticalSectionLocker lock(m_csCancelled);
+        m_bCancelled = true;
+      }
+      // wait for the thread to finish
+      // bombs - we're shutting down in any case
+//      GetThread()->Wait();
+#if defined( WANT_SEMAPHORE )
+      // now wait for them to really terminate
+      wxGetApp().m_semAllDone.Wait();
+#endif
+    }
+  }
+#endif
   // save the frame position
   int x, y, w, h;
 
@@ -300,7 +332,12 @@ MyFrame::~MyFrame()
 
   g_iniPrefs.data[IE_SASH_POS].dataCurrent.lVal =
     m_splitterMain->GetSashPosition();
-
+#if defined( WANT_SCALING )
+  // shrink app frame at startup is new reso;ution is smaller than old
+  wxDisplaySize( &x, &y );
+  g_iniPrefs.data[IE_RESOLUTION_X].dataCurrent.lVal = x;
+  g_iniPrefs.data[IE_RESOLUTION_Y].dataCurrent.lVal = y;
+#endif
   wxGetApp().SaveAccounts();
   SaveColWidths();
   SaveColLabels();
@@ -342,13 +379,18 @@ void MyFrame::OnClearList(wxCommandEvent& event)
 }
 
 // ------------------------------------------------------------------
-#if defined( WANT_MSVC_INTERNET_TEST )
-/* This arrangement displays the status once at start up &
- * not again until it changes.
+/**
+ * MUST use the WANT_STARTUP_IN_IDLE option, otherwise the toolbar won't 
+ * show until after the mail check returns.
  */
+
 void MyFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
 {
+  m_iNIdleCalls++;
 #if defined( WANT_MSVC_INTERNET_TEST )
+  /* This arrangement displays the status once at start up &
+   * not again until it changes.
+   */
   static int s_isOnline = -1; // not true nor false
 
   bool isOnline = wxGetApp().GetDialer()->IsOnline();
@@ -362,8 +404,37 @@ void MyFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
 #endif    // wxUSE_STATUSBAR
   }
 #endif    // WANT_MSVC_INTERNET_TEST
+#if defined( WANT_STARTUP_IN_IDLE )
+  // MUST use this option, otherwise tool bar won't show until
+  // after the mail check returns.
+#if defined( WANT_SEMAPHORE )
+  // signal the main frame that we can start threads
+  wxGetApp().m_semAllDone.Post();
+#endif
+  wxString wsT;
+  if( wxGetApp().IsInternetAvailable() )
+  {
+    if( g_iniPrefs.data[IE_OPT_AUTO_UPDATE_CHECK].dataCurrent.bVal && m_bNeedStartupNewversionCheck )
+    {
+      m_bNeedStartupNewversionCheck = false;
+      Check4Update( false );  // mo "You have the latest version" needed/wanted
+    }
+    // check & download mail at start up?
+    if( g_iniPrefs.data[IE_CHECK_MAIL_STARTUP].dataCurrent.bVal &&  m_bNeedStartupMailCheck )
+    {
+      m_bNeedStartupMailCheck = false; // one-time toggle
+      // check default account as left by user last time
+      Check4NewMail();
+    }
+  }
+  else
+  {
+    wsT.Printf( _("Internet Connection is unavailable!\n") );
+    wxMessageBox( wsT, "Error", wxOK );
+    wxLogMessage( wsT );  // does not show
+  }
+#endif
 }
-#endif    // WANT_MSVC_INTERNET_TEST
 
 // ------------------------------------------------------------------
 
@@ -388,5 +459,12 @@ wxMsPasswordPromptDlg::wxMsPasswordPromptDlg( wxWindow* parent) :
 {
   m_parent = parent;
 };
+
+// ------------------------------------------------------------------
+bool MyFrame::Cancelled()
+{
+    wxCriticalSectionLocker lock(m_csCancelled);
+    return m_bCancelled;
+}
 
 // ------------------------------- eof ------------------------------

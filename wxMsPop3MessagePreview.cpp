@@ -40,16 +40,20 @@
 #include <wx/wfstream.h>
 #include "wxMsMessagePreview.h"
 #include "wxMsPop3Preview/codec/rfc2047.h"
+#include "wxMsPop3Preview/codec/rfc2231.h"
 
 // ------------------------------------------------------------------
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
+// only good for MSVC
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
 // ------------------------------------------------------------------
@@ -228,10 +232,12 @@ void MyFrame::PreviewMessage( wxString a_wsAccount, long a_lIndex )
               wxString wsT1;
               ContentType ct = me.header().contentType();
               wxString wsContentType = ct.type();
-              wxString wsComtentSubType = ct.subtype();
+              wxString wsContentSubType = ct.subtype();
+              wxString wsCharset = wxRfc2231::Decode(me.header().contentType().paramList(),
+                                        _T("charset"));
               if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 1 )
               {
-                wxLogMessage( _("Content type: %s, subtype: %s"), wsContentType, wsComtentSubType );
+                wxLogMessage( _("Content type: %s, subtype: %s"), wsContentType, wsContentSubType );
               }
               dlg.GetStaticTextDataFrom()->SetLabel( it->m_wsFrom );
               dlg.GetStaticTextDataDate()->SetLabel( it->m_wsDateSent );
@@ -262,7 +268,11 @@ void MyFrame::PreviewMessage( wxString a_wsAccount, long a_lIndex )
                 wsT = _("undisclosed recipients" );
               dlg.GetStaticTextDataTo()->SetLabel( wsT );
               dlg.GetStaticTextDataSubject()->SetLabel( it->m_wsSubject );
-              dlg.GetStaticTextMsgType()->SetLabel( wsContentType + _T("/") + wsComtentSubType );
+              if( !wsCharset.IsEmpty() )
+                wsT = _T(" : ") + wsCharset;
+              else
+                wsT = wxEmptyString;
+              dlg.GetStaticTextMsgType()->SetLabel( wsContentType + _T("/") + wsContentSubType +  wsT );
 
               dlg.SetSize( g_iniPrefs.data[IE_PREVIEW_DLG_W].dataCurrent.lVal,
                 g_iniPrefs.data[IE_PREVIEW_DLG_H].dataCurrent.lVal );
@@ -272,8 +282,7 @@ void MyFrame::PreviewMessage( wxString a_wsAccount, long a_lIndex )
               m_found_plain_text_body = false;
               m_found_html_body = false;
               m_iNAttachments = 0;
-              
-//              std::string stream_str1((const char*)m_Pop3CommandData.sm_wsResultData.mb_str(wxConvLocal));
+
               std::string stream_str1((const char*)it->m_wsMessage.mb_str(wxConvLocal));
               dlg.GetTextCtrlMessageSource()->AppendText((const char*)it->m_wsMessage.mb_str(wxConvLocal));
               // since the string as received contains \r\n as line terminators

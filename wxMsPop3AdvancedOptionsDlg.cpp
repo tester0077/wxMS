@@ -74,6 +74,7 @@ MyAdvancedPopConfigDlg::MyAdvancedPopConfigDlg( MyAccountsDetailsDialog* parent 
   */
 bool MyAdvancedPopConfigDlg::TransferDataToWindow( void )
 {
+  Fit();
   return true;
 }
 //------------------------------------------------------------------

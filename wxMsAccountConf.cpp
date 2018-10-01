@@ -40,14 +40,16 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
-// this block needs to AFTER all headers
+// only good for MSVC
+// this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
-// ------------------------------------------------------------------
 // ==================================================================
 /* This MUST be called on main frame dtor - else the variables
  * holding the data will not be valid any longer

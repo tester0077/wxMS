@@ -80,6 +80,15 @@ void wxMsOptionsDialog::OnOptDlgLog_Log2FileClick( wxCommandEvent& WXUNUSED(even
       m_iniPrefs.data[IE_LOG_DIR_PATH].dataCurrent.wsVal +_T("\\") + WS_LOG_FILE_NAME;
     wxGetApp().CreateNewLog();
   }
+  else  // the log file is open & we need to close the log file and stop redirection
+  {
+    if ( wxGetApp().m_pAppLog->IsLogFileOK() )
+    {
+      wxGetApp().m_pAppLog->CloseLog();
+      delete  wxLog::SetActiveTarget( wxGetApp().m_pLogChain );
+      wxGetApp().m_pLogChain = NULL;
+    }
+  }
 #endif
 }
 

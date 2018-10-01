@@ -132,14 +132,28 @@ void MyFrame::ThreadGetCurlPop3OneMessageBody( Pop3CommandData &ar_Pop3CommandDa
     }
     // ------Get the  sequence number we need
     wxArrayString wasUidlLines;
-    // split the long result into individual UIDLs
-    ThreadParseUidls( wsUidlResult, wasUidlLines );
+    /* Parse the long string of UIDLs returned from the interaction with the
+     * POP3 server.
+     * This routine splits the UIDLs and adds them to the string array for
+     * further processing
+     */
+    ThreadParseUidls( wsUidlResult, wasUidlLines, _T("GetMessageBody") );
 
-    unsigned int uiSeq = GetSeqNoFromUidl( wsUidl, wasUidlLines );
-    wxASSERT( uiSeq );  // MUST be positive, > 0
+    long lSeq = GetSeqNoFromUidl( wsUidl, wasUidlLines );
+#if 1
+    if ( lSeq <= 0 )
+    {
+      wxString wsT;
+      wxBell(); wxBell(); wxBell();
+      wxLogMessage(
+        _T("!!! %s %ld: GetSeqNoFromUidl failed:\n    %s"), __FILE__, __LINE__, wsUidl );
+    }
+#else
+    wxASSERT( lSeq );  // MUST be positive, > 0
+#endif
     // ------------------------------------------------------------------
     // Set the command with the proper message number
-    wsCommand.Printf( _T("RETR %d"), uiSeq );
+    wsCommand.Printf( _T("RETR %d"), lSeq );
     curl_easy_setopt( pCurl, CURLOPT_CUSTOMREQUEST, wsCommand.mb_str(wxConvUTF8).data());
     /* Perform the custom request */
     res = curl_easy_perform( pCurl );
@@ -197,7 +211,7 @@ cleanup:
  * This routine splits the UIDLs and adds them to the string array for
  * further processing
  */
-void MyFrame::ThreadParseUidls( wxString a_wsUidlResult, wxArrayString &ar_wasUidls )
+void MyFrame::ThreadParseUidls( wxString a_wsUidlResult, wxArrayString &ar_wasUidls, wxString a_wsWhereFrom )
 {
   wxString  wsSeq;
   int       j = 0;
@@ -209,6 +223,7 @@ void MyFrame::ThreadParseUidls( wxString a_wsUidlResult, wxArrayString &ar_wasUi
   wxString wsRest;
   unsigned long ulSeqNo;
   wxString wsSeqNo;
+  wxString wsMsg = _T("Called from: ") + a_wsWhereFrom;
 
   // this code simply splits the lines and adds them to the
   // string array
@@ -223,7 +238,22 @@ void MyFrame::ThreadParseUidls( wxString a_wsUidlResult, wxArrayString &ar_wasUi
     if ( !wsSeqNo.ToULong( &ulSeqNo ) )
       continue; // line does not start with a numeric char, skip it
     ar_wasUidls.Add( wsLine );
-    wxASSERT( ulSeqNo == (unsigned long)j );
+#if defined( WANT_UIDL_ASSERT )
+    /* a typical input string looks like
+      UIDL
+      +OK 16 messages
+      1 41112.S1DlDulSXMPlpsZday1pZQG4GqxGXNGQEOqRS8JhJOE=
+      2 41165.LPg9Lya6RayiUhs,0mETUmrmmoF9pVKsA8AcIyVsSXI=
+       ....
+      14 41641.NfkkM3GH5Z2tmdUhByKBGZIb9k5XeB1FTz3EYc5YWJw=
+      15 41642.K,I4OSGvrLlIzq,6JgCzk6+dNEhJQaxZBlXC2yZw38c=
+      16 41643.lPjQIdv,HVa22ln21WUCMVLTv9Y9sV5q1BV7bg2U0h8=
+     * 
+     */
+    // this assert checks to see if the sequential index found in the
+    // server reply is as expected
+    wxASSERT_MSG( ulSeqNo == (unsigned long)j, wsMsg );
+#endif
     j++;
     if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
     {

@@ -229,6 +229,6 @@ void wxCCE80InitBitmapResources()
     }
 
     XRC_ADD_FILE(wxT("XRC_resource/wxMsAboutDlgBase_bitmaps.cpp$.._rc_wxMS-1.png"), xml_res_file_0, xml_res_size_0, wxT("image/png"));
-    XRC_ADD_FILE(wxT("XRC_resource/wxMsAboutDlgBase_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2015_GitHubProjects_wxMS_wxMsAbout_wxMsAboutDlgBase_bitmaps.xrc"), xml_res_file_1, xml_res_size_1, wxT("text/xml"));
-    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/wxMsAboutDlgBase_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2015_GitHubProjects_wxMS_wxMsAbout_wxMsAboutDlgBase_bitmaps.xrc"));
+    XRC_ADD_FILE(wxT("XRC_resource/wxMsAboutDlgBase_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2015_GitHubProjects_wxMS-Github_wxMS_wxMsAbout_wxMsAboutDlgBase_bitmaps.xrc"), xml_res_file_1, xml_res_size_1, wxT("text/xml"));
+    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/wxMsAboutDlgBase_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2015_GitHubProjects_wxMS-Github_wxMS_wxMsAbout_wxMsAboutDlgBase_bitmaps.xrc"));
 }

@@ -61,13 +61,17 @@
  */
 bool MyFrame::ThreadCurlPop3ServerTest( Pop3CommandData &ar_Pop3CommandData )
 {
+  wxString wsT;
   CURL *pCurl;
   CURLcode res = CURLE_OK;
   struct MemoryStruct chunk;
 
   wxASSERT( ar_Pop3CommandData.sm_wasCommands.GetCount() );
+#if defined( WANT_CONNECT_ONLY )
+#else
   chunk.memory = (char*) malloc(1);
   chunk.size = 0;
+#endif
   wxString wsPop3Server = _T("pop3://");
   wsPop3Server += ar_Pop3CommandData.sm_wsPop3ServerUrl.mb_str(wxConvUTF8).data();
 #if defined( _DEBUG )
@@ -77,7 +81,7 @@ bool MyFrame::ThreadCurlPop3ServerTest( Pop3CommandData &ar_Pop3CommandData )
   wxString wsCommand =  ar_Pop3CommandData.sm_wasCommands[0];
 #endif
   pCurl = curl_easy_init();
-  if(pCurl)
+  if( pCurl )
   {
     curl_easy_setopt( pCurl,CURLOPT_USERNAME, ar_Pop3CommandData.sm_wsUserName.mb_str(wxConvUTF8).data());
     curl_easy_setopt( pCurl,CURLOPT_PASSWORD, ar_Pop3CommandData.sm_wsUserPassword.mb_str(wxConvUTF8).data() );
@@ -85,6 +89,18 @@ bool MyFrame::ThreadCurlPop3ServerTest( Pop3CommandData &ar_Pop3CommandData )
     // allow some control over connection timeout - set via INI for now
     curl_easy_setopt( pCurl, CURLOPT_CONNECTTIMEOUT, g_iniPrefs.data[IE_POP3_SERVER_TIMEOUT].dataCurrent.lVal );
     //curl_easy_setopt( pCurl, CURLOPT_VERBOSE, 1);
+#if defined( WANT_CONNECT_ONLY )
+    // from: https://curl.haxx.se/libcurl/c/CURLOPT_CONNECT_ONLY.html
+    curl_easy_setopt( pCurl, CURLOPT_CONNECT_ONLY, 1L);
+    res = curl_easy_perform( pCurl);
+    // Always cleanup
+    curl_easy_cleanup( pCurl );
+    ar_Pop3CommandData.sm_bSuccess = ( res == CURLE_OK);
+    wxLogMessage( _("Connect test for %s: %s"), wsPop3Server, ( res == CURLE_OK) ? _("OK") : _("Failed") );
+    // return code gets lost when app goes back up the call stack
+    return ( res == CURLE_OK); 
+  }
+#else  
     curl_easy_setopt( pCurl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
     curl_easy_setopt( pCurl, CURLOPT_WRITEDATA, (void *)&chunk);
 
@@ -94,7 +110,12 @@ bool MyFrame::ThreadCurlPop3ServerTest( Pop3CommandData &ar_Pop3CommandData )
     curl_easy_setopt( pCurl, CURLOPT_CUSTOMREQUEST, ar_Pop3CommandData.sm_wasCommands[0].mb_str(wxConvUTF8).data());
     /* Perform the custom request */
     res = curl_easy_perform( pCurl );
-
+    // does user want us to quit?
+    if ( GetThread()->TestDestroy() || Cancelled() )
+    {
+      // clean up memory
+      goto cleanup;
+    }
     /* Check for errors */
     if (CURLE_OPERATION_TIMEDOUT == res)
     {
@@ -119,6 +140,12 @@ bool MyFrame::ThreadCurlPop3ServerTest( Pop3CommandData &ar_Pop3CommandData )
     }
     else
     {
+      // does user want us to quit?
+      if ( GetThread()->TestDestroy() || Cancelled() )
+      {
+        // clean up memory
+        goto cleanup;
+      }
       // seems we need to make sure the data is copied out of chunk.memory
       // to be saved before the memory is freed
       wxString wsTemp = chunk.memory;
@@ -133,10 +160,11 @@ bool MyFrame::ThreadCurlPop3ServerTest( Pop3CommandData &ar_Pop3CommandData )
     // clean up memory
     if(chunk.memory)
     {
-        free(chunk.memory);
-        chunk.memory = NULL;
+      free(chunk.memory);
+      chunk.memory = NULL;
     }
   }
+
   // clean up memory
 cleanup:
   if(chunk.memory)
@@ -144,9 +172,10 @@ cleanup:
       free(chunk.memory);
       chunk.memory = NULL;
   }
+#endif
   // Always cleanup
   curl_easy_cleanup( pCurl );
-  return true;
+  return false;
 }
 
 // ------------------------------- eof ------------------------------

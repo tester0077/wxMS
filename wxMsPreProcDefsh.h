@@ -19,8 +19,9 @@
  * This, hopefully, prevents the problem of different #defines because
  * some project preprocessor values are not updated consistently
  */
-#define WS_LOG_FILE_NAME _("wxMsLog.txt")
-#define COPYRIGHT_YEAR_1 2018;
+#define COPYRIGHT_YEAR_1        2018;
+#define EMAIL_ATTACHMENT_LIMIT  (5 * 1024 * 1024) // 5 MB
+#define USER_AGENT              _T("wxMS")
 // ------------------------------------------------------------------
 #if !defined( wxUSE_UNICODE )   // defining it here seesm too late
 #define wxUSE_UNICODE           // for some header
@@ -46,6 +47,8 @@
 #define WANT_EXE_LINK_DATE
 #define WANT_LOG_WIN
 #define WANT_LOG_CHAIN
+#define WANT_LOG_LIMIT
+#define WANT_LOG_ROTATION           // log rotation
 #define WANT_VERSION_IN_TITLE
 #define WANT_PROGRESS_DIALOG_NO
 #define WANT_NEW_PROGRESS
@@ -60,15 +63,33 @@
 #define WANT_DBGRPRT
 #define WANT_MSVC_INTERNET_TEST     // use the wxDialUpManager class
 #define WANT_MAIL_CONNECT_TEST_NO   // use mail server connectivity
+#define WANT_UIDL_ASSERT            // see wxMsThreadCurlPop3GetMessageBody.cpp - ThreadParseUidls
+#define WANT_STARTUP_IN_IDLE        // mail check startup stuff in OnIdle()
+                                    // MUST use this option, otherwise toolbar won't show until
+                                    // after the mail check returns.
+#define WANT_CONNECT_ONLY_NO           // set libcurl connect test to use the CURLOPT_CONNECT_ONLY
+
+#define WANT_NEW_STOP
+#define WANT_SEMAPHORE
+
+#define WANT_MONITOR_CHECK        // do we want to force app to primary monitor
+#define WANT_SCALING              // shrink app frame at startup is new reso;ution is
+                                  // smaller than old
+#define WANT_FILTER_EXPLANATION   // display the filter explanation for user
+#define WANT_AUTO_START           // want code to allow autostart with Windows
+
+#if defined( WANT_LOG_CHAIN )
+#define WS_LOG_FILE_NAME _("wxMsLog.txt")
+#endif
 // ------------------------------------------------------------------
 // version specific #defines
-#if defined (_DEBUG )
-
-#  define CHECK_4_UPDATE_URL _T("http://local/wxMsVer/wxMSversion.php");
-#else
+#if defined ( _PUBLIC_ ) 
+// for PUBLIC releases use remote server for updates
 #  define CHECK_4_UPDATE_URL _T("http://remote/wxMsVer/wxMSversion.php");
-
-#endif  // _DEBUG
+#else
+// handle my local applications using my local server for updates
+#  define CHECK_4_UPDATE_URL _T("http://local/wxMsVer/wxMSversion.php");
+#endif  // _PUBLIC_
 #if !defined( _MSC_VER )  // overrides for linux
 #if !defined ( HAVE_STDINT_H )
 #  define HAVE_STDINT_H

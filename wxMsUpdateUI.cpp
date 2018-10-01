@@ -38,11 +38,14 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
+// only good for MSVC
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
 // ------------------------------------------------------------------
@@ -55,7 +58,7 @@ void MyFrame::OnUpdateUiMailCheckStart(wxUpdateUIEvent& event)
     wxCriticalSectionLocker lock(m_CS_Pop3MsgList);
     bLocalRun = m_bRunning;
   }
-  event.Enable( !bLocalRun );
+  event.Enable( !bLocalRun && m_bAnyAccountsActive );
   // don't skip these events!!!
 //  event.Skip();
 }
@@ -68,7 +71,7 @@ void MyFrame::OnUpdateUiMailCheckStart(wxUpdateUIEvent& event)
  */
 void MyFrame::OnUpdateUiMailCheckStop(wxUpdateUIEvent& event)
 {
-  event.Enable( false /*m_bRunning */);
+  event.Enable( m_bRunning );
   // don't skip these events!!!
 //  event.Skip();
 }

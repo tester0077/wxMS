@@ -74,6 +74,9 @@ void MyAccountsDetailsDialog::OnMailServerTest(wxCommandEvent& WXUNUSED(event) )
   wsT.Printf( _("Testing  %s ..."), m_textCtrlPop3ServerUrl->GetValue() );
   // display  a 'busy' notice
   {
+    long lTime = 0l;
+    m_wsTestRawCapaString = wxEmptyString;
+    m_bTestHasCapa = m_bTestHasUidl = false;
     wxWindowDisabler disableAll;
     wxBusyInfo wait( wsT );
     wxGetApp().m_frame->RunLibcurlThread();         // handle the rest via threads
@@ -82,6 +85,7 @@ void MyAccountsDetailsDialog::OnMailServerTest(wxCommandEvent& WXUNUSED(event) )
     {
       ::wxYield();
       ::wxMilliSleep( 100 );
+      lTime++;
     }
     if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
     {
@@ -93,9 +97,18 @@ void MyAccountsDetailsDialog::OnMailServerTest(wxCommandEvent& WXUNUSED(event) )
       m_staticTextTestResult->SetLabelText( wsT );
       return;
     }
-    else
+    else if ( wsT.IsEmpty() )
     {
-      m_staticTextTestResult->SetLabelText( wsResult + _(" Success") );
+      wsResult = _("Failed!");
+      if ( lTime > 20l )
+        wsResult += _(" - Timeout");
+      m_staticTextTestResult->SetLabelText( wsResult );
+      return;
+    }
+    else 
+    {
+      wsResult = _(" Success");
+      m_staticTextTestResult->SetLabelText( wsResult );
       m_wsTestRawCapaString = wxGetApp().m_frame->m_Pop3CommandData.sm_wsResultData;
       m_bTestHasCapa = m_wsTestRawCapaString.IsEmpty();
       m_bTestHasUidl = m_wsTestRawCapaString.MakeUpper().Find( _T("UIDL"));

@@ -45,11 +45,14 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
-// this block needs to AFTER all headers
+// only good for MSVC
+// this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
 // -------------------------------------------------------------
@@ -61,6 +64,14 @@ MyAccountsDetailsDialog::MyAccountsDetailsDialog( MyAccountsDialog* parent ) :
   m_pCurrent = NULL;
   m_wsTestRawCapaString = wxEmptyString;
   m_bTestHasCapa = m_bTestHasUidl = false;
+  // clean up local iniPrefs_t - does NOT cause memory leaks
+  // makes sure the temporary data are all initialized properly
+  m_iniAcctDetailsPrefs.lPrefVer = 0l;
+  for( int i = 0; i < IE_MAX; i++ )
+  {
+    m_iniAcctDetailsPrefs.data[i].wsKeyStr = m_iniAcctDetailsPrefs.data[i].wsPathStr = wxEmptyString;
+    m_iniAcctDetailsPrefs.data[i].eType = eLong;
+  }
 }
 
 //------------------------------------------------------------------
@@ -103,6 +114,7 @@ bool MyAccountsDetailsDialog::TransferDataToWindow( void )
     m_checkBoxRememberPW->SetValue( false );
   }
   m_notebookAcctDetails->SetSelection( 0 ); // select 'incoming' page
+  Fit();
   return true;
 }
 //------------------------------------------------------------------

@@ -103,7 +103,7 @@ bool MyFrame::CheckConnectivity()
         pCurrent->m_bServerAvailable = false;
     }
   }
-  wsT.Printf( _("%d/%d avail"), iActiveAvailable, iActiveAccounts );
+  wsT.Printf( _("POP3 %d/%d avail"), iActiveAvailable, iActiveAccounts );
   SetStatusText( wsT, 4 );
   return ( iActiveAvailable > 0);
 }
@@ -125,15 +125,18 @@ bool MyFrame::MailServerConnectTest( Pop3CommandData &ar_Pop3CommandData )
   // need to wait to let libcurl download the headers
   while ( bLocalRun )
   {
+    // does user want us to quit?
+    if( Cancelled() )
+      break;
     {
       wxCriticalSectionLocker lock(m_CS_Pop3MsgList);
       bLocalRun = m_bRunning;
     }
     ::wxYield();
-    ::wxMilliSleep( 100 );
+//    ::wxMilliSleep( 100 );
   }
   wsT = ar_Pop3CommandData.sm_wsResultData;
-  if ( wsT.IsEmpty() )
+  if ( wsT.IsEmpty() || wsT.StartsWith( _T("Error:") ) )
   {
     return false;
   }

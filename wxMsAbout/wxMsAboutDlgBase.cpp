@@ -62,7 +62,7 @@ wxMsAboutDlgBase::wxMsAboutDlgBase(wxWindow* parent, wxWindowID id, const wxStri
     
     boxSizer11->Add(m_staticTextCopyright, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
-    m_staticTextVersion = new wxStaticText(this, wxID_ANY, _("Public Release Version:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    m_staticTextVersion = new wxStaticText(this, wxID_ANY, _("Version:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
     boxSizer11->Add(m_staticTextVersion, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     

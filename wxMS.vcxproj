@@ -157,6 +157,7 @@ rc.exe /I$(WXWIN_300)/include /fo$(Configuration)/$(ProjectName)r.res ./rc/$(Pro
     <ClCompile Include="wxMsPop3MessagesList.cpp" />
     <ClCompile Include="wxMsPrintMimeStructure.cpp" />
     <ClCompile Include="wxMsRunMailClient.cpp" />
+    <ClCompile Include="wxMsShortcutProvider.cpp" />
     <ClCompile Include="wxMsThreadCurlPop3DeleteMsg.cpp" />
     <ClCompile Include="wxMsThreadCurlPop3GetMessageBody.cpp" />
     <ClCompile Include="wxMsThreadCurlPop3GetMessages.cpp" />

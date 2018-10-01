@@ -1059,6 +1059,6 @@ void wxC10F1InitBitmapResources()
     XRC_ADD_FILE(wxT("XRC_resource/wxMS_wxcr_bitmaps.cpp$rc_mail_send.png"), xml_res_file_3, xml_res_size_3, wxT("image/png"));
     XRC_ADD_FILE(wxT("XRC_resource/wxMS_wxcr_bitmaps.cpp$rc_thunderbird-24x24.png"), xml_res_file_4, xml_res_size_4, wxT("image/png"));
     XRC_ADD_FILE(wxT("XRC_resource/wxMS_wxcr_bitmaps.cpp$rc_wxMS-1.ico"), xml_res_file_5, xml_res_size_5, wxT("image/x-icon"));
-    XRC_ADD_FILE(wxT("XRC_resource/wxMS_wxcr_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2010_HummerSVN_wxMS-Curl_wxMS_wxcr_bitmaps.xrc"), xml_res_file_6, xml_res_size_6, wxT("text/xml"));
-    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/wxMS_wxcr_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2010_HummerSVN_wxMS-Curl_wxMS_wxcr_bitmaps.xrc"));
+    XRC_ADD_FILE(wxT("XRC_resource/wxMS_wxcr_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2015_GitHubProjects_wxMS-Github_wxMS_wxMS_wxcr_bitmaps.xrc"), xml_res_file_6, xml_res_size_6, wxT("text/xml"));
+    wxXmlResource::Get()->Load(wxT("memory:XRC_resource/wxMS_wxcr_bitmaps.cpp$D__pkg_wx_MSVC2015__3.1-2015_GitHubProjects_wxMS-Github_wxMS_wxMS_wxcr_bitmaps.xrc"));
 }

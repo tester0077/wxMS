@@ -58,6 +58,10 @@ enum iniEnts
   IE_FRAME_H,
   IE_OPT_DLG_H,                     // option dialog height
   IE_OPT_DLG_W,                     // option dialog width
+#if defined( WANT_SCALING )
+  IE_RESOLUTION_X,                  // last saved screen resolution X
+  IE_RESOLUTION_Y,                  // last saved screen resolution Y
+#endif
   IE_OPT_LAST_CONF_FILE,            // last configuration file loaded
 
   IE_MAIL_GRID_COL_WIDTHS,          // mail grid col widths w1|w2|w3.. |wn
@@ -66,9 +70,11 @@ enum iniEnts
 
   IE_LOG_FILE_WANTED,               // write log to a file
   IE_LOG_VERBOSITY,                 // level of log detail
-  IE_LOG_NEW_LOG,                   // when to start new log: ignore - do nothing, every job or every day
+  IE_LOG_FREQUENCY,                 // enum to start new log: ignore - do nothing, every job or every day
   IE_LOG_DIR_PATH,                  // path to log file directory
   IE_USE_LOG_DEF_DIR,               // use the default log directory
+  IE_LOG_ROT_MAX,                   // max number of rotated logs to keep
+  IE_LOG_ROT_NEXT,                  // next log rotation index
 
   IE_LAST_OPTION_TAB,               // last used tab in options dialog
 
@@ -99,6 +105,9 @@ enum iniEnts
   IE_MAIL_CLIENT_PATH,              // path to e-mail client
   IE_ADV_POP3_OPTION_DLG_H,         // adv POP3 options dialog height
   IE_ADV_POP3_OPTION_DLG_W,         // adv POP3 options dialog width
+#if defined( WANT_AUTO_START )
+  IE_AUTO_START,
+#endif
 
   IE_MAX            // keep as last - determines size of struct iniPrefs
 };

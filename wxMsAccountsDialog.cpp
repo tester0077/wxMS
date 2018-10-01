@@ -39,14 +39,16 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
-// this block needs to AFTER all headers
+// only good for MSVC
+// this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
-
 // ------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MyAccountsDialog, wxDialog)
   EVT_BUTTON( wxID_BUTTON_ACCOUNT_ADD, MyAccountsDialog::OnAccountAdd )
@@ -75,6 +77,8 @@ void MyFrame::OnMenuAccounts( wxCommandEvent& event )
     wxGetApp().MakeConfigCopy( dlg.m_iniDialogPrefs, g_iniPrefs );
     Check4NewMail();
   }
+  // see if any accounts are active/enabled
+  m_bAnyAccountsActive = GetAccountInfo();
   // save the dialog size
   int w, h;
   dlg.GetSize( &w, &h );
@@ -91,6 +95,14 @@ MyAccountsDialog::MyAccountsDialog( wxWindow* parent ) :
   m_bEditingAccount = false;
   m_iSelectedAccount = 0;
   InitAccountsGrid();
+  // clean up local iniPrefs_t - does NOT cause memory leaks
+  // makes sure the temporary data are all initialized properly
+  m_iniDialogPrefs.lPrefVer = 0l;
+  for( int i = 0; i < IE_MAX; i++ )
+  {
+    m_iniDialogPrefs.data[i].wsKeyStr = m_iniDialogPrefs.data[i].wsPathStr = wxEmptyString;
+    m_iniDialogPrefs.data[i].eType = eLong;
+  }
 }
 
 // ------------------------------------------------------------------

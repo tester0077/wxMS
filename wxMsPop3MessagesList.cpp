@@ -40,11 +40,14 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
+// only good for MSVC
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
 // ------------------------------------------------------------------
@@ -96,7 +99,7 @@ void MyFrame::DisplayMailList()
  * Insert one row of data at top of the mail grid and set the 'action' check
  * boxes according the the values returned from the 'filter' code.
  * Note: at this time the data has been added to the message list. 
- *  All we need to do is to display the new row in the grid.
+ * All we need to do is to display the new row in the grid.
  */
 void MyFrame::AddOneMessageRow( size_t szIndex  )
 {
@@ -106,6 +109,7 @@ void MyFrame::AddOneMessageRow( size_t szIndex  )
   wxString wsColor;
   wxString wsT;
   size_t j = 0;
+  
   {
     wxCriticalSectionLocker lock(m_CS_Pop3MsgList);
     for (std::list<MyPop3MsgElement>::iterator it = m_Pop3MsgList.begin();
@@ -116,6 +120,8 @@ void MyFrame::AddOneMessageRow( size_t szIndex  )
         GetMessageFilterStatus( szIndex, it, bDelMessage, wsStatus, wsColor );
 
         it->m_bDelete = bDelMessage;
+        if ( bDelMessage )
+          m_sz2Delete++;
         long lRow = szIndex;
         wxString wsSize;
         m_gridMail->BeginBatch();

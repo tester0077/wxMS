@@ -38,14 +38,16 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
+// only good for MSVC
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
-
 // ==================================================================
 /**
  * This routine is called for all conversations with the POP3 server.
@@ -70,8 +72,6 @@ void MyFrame::RunLibcurlThread()
   }
   // we want to start a long task, but we don't want our GUI to block
   // while it's executed, so we use a thread to do it.
-  //if (CreateThread(wxTHREAD_JOINABLE) != wxTHREAD_NO_ERROR)
-  // does not fix the memory leaks
   if (CreateThread(wxTHREAD_DETACHED) != wxTHREAD_NO_ERROR)
   {
     wxLogError("Could not create the worker thread!");
@@ -86,6 +86,8 @@ void MyFrame::RunLibcurlThread()
     return;
   }
   m_bRunning = true;
+  // thread is not running yet, no need for crit sect
+  m_bCancelled = false;
 }
 
 // ------------------------------------------------------------------
@@ -101,13 +103,17 @@ wxThread::ExitCode MyFrame::Entry()
   {
     wxLogMessage( _T("\n\nMyFrame::Entry"));
   }
-  while (!GetThread()->TestDestroy())
+  while (!GetThread()->TestDestroy() && !Cancelled()
+#if defined( WANT_NEW_STOP )
+    &&  !wxGetApp().m_bShuttingDown 
+#endif
+    )
   {
     // since this Entry() is implemented in MyFrame context we don't
     // need any pointer to access the m_data, m_processedData, m_dataCS
     // variables... very nice!                            
     ExecutePop3Command( m_Pop3CommandData );  // <<<<<<<<<<<<<<<<<<<<<< start work
-    // continue work at: wxMsCurlPop3ExecuteCmd.cpp
+    //                                  continue work at: wxMsCurlPop3ExecuteCmd.cpp
     if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
     {
       wxLogMessage( _T("ExecutePop3Command"));
@@ -122,7 +128,7 @@ wxThread::ExitCode MyFrame::Entry()
 #if 1
     if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
     {
-      wxLogMessage( _T("MyFrame::Entry Done"));
+      wxLogMessage( _T("MyFrame::ExecutePop3Command Entry Done"));
     }
     // ensure no one reads m_data while we write it
     {
@@ -142,9 +148,17 @@ wxThread::ExitCode MyFrame::Entry()
     // or possibly wxBup
 #endif
   }
+#if defined( WANT_SEMAPHORE )
   // we only need one call to signal completion
   // TestDestroy() returned true (which means the main thread asked us
   // to terminate as soon as possible) or we ended the long task...
+  if ( wxGetApp().m_bShuttingDown )
+  {
+    wxGetApp().m_bShuttingDown = false;
+    // signal the main frame that we're done
+    wxGetApp().m_semAllDone.Post();
+  }
+#endif
   return (wxThread::ExitCode)0;
 }
 

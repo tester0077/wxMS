@@ -62,7 +62,7 @@ void MyFrame::GetMessageFilterStatus( long a_lIndex, std::list<MyPop3MsgElement>
 
   int i = 0;
   wxString wsAddr;
-  wxString wsItName;
+  wxString wsFilterName;
   wxString wsAction;
   wxString wsSubject = a_it->m_wsSubject;
   ar_bDelete = false;
@@ -73,24 +73,24 @@ void MyFrame::GetMessageFilterStatus( long a_lIndex, std::list<MyPop3MsgElement>
   for ( std::vector<MyFilterListEl>::iterator filterIt = wxGetApp().m_FilterList.begin();
     filterIt != wxGetApp().m_FilterList.end(); ++filterIt, i++ )
   {
-    wxString wsItName = filterIt->m_wsName;
-    wxString wsRuleText = filterIt->m_wsRuleText; // do NOT modify the ruke string
+    wxString wsFilterName = filterIt->m_wsName;
+    wxString wsRuleText = filterIt->m_wsRuleText; // do NOT modify the rule string
     wsRuleText = wsRuleText.MakeLower();
     wsRuleText = _T("*") + wsRuleText + _T("*");
-    wsItName = wsItName.MakeLower();
+    wsFilterName = wsFilterName.MakeLower();
     bFirstToken = true;
     wxStringTokenizer tokenizer( filterIt->m_wsAction, ",");
     while ( tokenizer. HasMoreTokens() )
     {
       // we should only have one token per action
-      wxASSERT_MSG( bFirstToken, _("Too many 'action' tokens: ") + wsItName.MakeUpper() );
+      wxASSERT_MSG( bFirstToken, _("Too many 'action' tokens: ") + wsFilterName.MakeUpper() );
       bFirstToken = false;
       wxString token = tokenizer.GetNextToken();
       if ( token.IsSameAs( _T("legit" ) ) )
       {
         if ( filterIt->m_wsRuleSource.Find( _T("'From'") ) != wxNOT_FOUND )
         {
-          wsAddr = a_it->m_wsFrom;//adr.GetName();
+          wsAddr = a_it->m_wsFrom;
           // assume we have a quoted string if we have a leading '"'
           if( wsAddr.StartsWith( _T("\"") ) )
           {
@@ -152,19 +152,27 @@ void MyFrame::GetMessageFilterStatus( long a_lIndex, std::list<MyPop3MsgElement>
           if ( filterIt->m_wsRuleSource.Find( _T("'From'") ) != wxNOT_FOUND )
           {
             wsAddr = a_it->m_wsFrom;
+#if 1
+            // for quoted strings we caNOT assume that the second " is at
+            // the end of the string.
+            // Simply remove all "
+            wsAddr.Replace( _T("\""), _T(""), true );
+#else
             // assume we have a quoted string if we have a leading '"'
             if( wsAddr.StartsWith( _T("\"") ) )
             {
               wsAddr = wsAddr.AfterFirst( '"' );
               wsAddr = wsAddr.BeforeLast( '"' );
             }
+#endif
             wsAddr = wsAddr.MakeLower();
             // make a simple match string
-            if( wsAddr.MakeLower().Matches( wsRuleText ) )
+            if( wsAddr.Matches( wsRuleText ) )
             {
               ar_wsColor = filterIt->m_wsColorHex;
               ar_wsStatus = filterIt->m_wsStatus;
-              ar_bDelete = true;
+              if ( filterIt->m_bState )
+                ar_bDelete = true;
               return;
             }
           }
@@ -175,26 +183,23 @@ void MyFrame::GetMessageFilterStatus( long a_lIndex, std::list<MyPop3MsgElement>
             {
               ar_wsColor = filterIt->m_wsColorHex;
               ar_wsStatus = filterIt->m_wsStatus;
-              ar_bDelete = true;
+              if ( filterIt->m_bState )
+                ar_bDelete = true;
               return;
             }
           }
           else if ( filterIt->m_wsRuleSource.Find( _T("'To'") ) != wxNOT_FOUND )
           {
             wsAddr = a_it->m_wsTo;
-#if 0
-            if ( toArray.size() )
-              ;
-#else
             // make a simple match string
             if( wsAddr.Matches( wsRuleText ) )
             {
               ar_wsColor = filterIt->m_wsColorHex;
               ar_wsStatus = filterIt->m_wsStatus;
-              ar_bDelete = true;
+              if ( filterIt->m_bState )
+                ar_bDelete = true;
               return;
             }
-#endif
           }
 #if 0 // not implemented yet
           else if ( filterIt->m_wsRuleSource.Find( _T("'CC'") ) != wxNOT_FOUND )

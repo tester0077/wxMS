@@ -61,7 +61,7 @@
  * Note depending on the start of the string, the passed in string
  * will look quite different:
  * For TOP, it will contain the account name the data corresponds to
- * for DELE it wil have the UIDL prefixed with the proper sequence number
+ * for DELE it will have the UIDL prefixed with the proper sequence number
  */
 void MyFrame::OnUpdateDisplay( wxThreadEvent& event)
 {
@@ -132,7 +132,7 @@ void MyFrame::OnUpdateDisplay( wxThreadEvent& event)
         wsAccountName1 = it->m_wsAcctName;
         if (g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4)
         {
-          wxLogMessage(_T("OnUpdateDisplay 2  %ld: Deleted Message: %d GetCount:%d, %s - %s"),
+          wxLogMessage(_T("OnUpdateDisplay 2  %ld: Deleted Message: %d GetCount: %d, %s - %s"),
             __LINE__, j, m_Pop3MsgList.size(), wsAccountName1, wsAccountName);
         }
         if ( it->m_wsAcctName.IsSameAs( wsAccountName ) )
@@ -141,7 +141,7 @@ void MyFrame::OnUpdateDisplay( wxThreadEvent& event)
           wxString wsUidlMsgList = it->m_wsUidl.AfterFirst(' ');
           if (g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4)
           {
-            wxLogMessage(_T("OnUpdateDisplay 3  %ld: Deleted Message: %d  GetCount:%d, %s - %s"),
+            wxLogMessage(_T("OnUpdateDisplay 3  %ld: Deleted Message: %d  GetCount: %d, %s - %s"),
               __LINE__, j, m_Pop3MsgList.size(), wsUidlMsgList, wsEventString);
           }
           if ( wsUidlMsgList.IsSameAs( wsEventString ) )
@@ -149,7 +149,7 @@ void MyFrame::OnUpdateDisplay( wxThreadEvent& event)
             m_Pop3MsgList.erase( it );
             if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
             {
-              wxLogMessage(_T("OnUpdateDisplay 4  %ld: Deleted Message: %d  GetCount:%d, %s - %s"),
+              wxLogMessage(_T("OnUpdateDisplay 4  %ld: Deleted Message: %d  GetCount: %d, %s - %s"),
                 __LINE__, j, m_Pop3MsgList.size(), wsUidlMsgList, wsEventString );
             }
             m_gridMail->DeleteRows( j );

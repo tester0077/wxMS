@@ -46,8 +46,10 @@
 // this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
 // ------------------------------------------------------------------
@@ -80,55 +82,65 @@ iniPrefs_t g_iniPrefs = {
          0.0,        // float
                   // current value
          true },
-    { _T("Sash"),                 _T("Position"),   eLong,   0,     60            },
-    { _T("MainFrame"),            _T("x"),          eLong,   0,     10            },
-    { _T("MainFrame"),            _T("y"),          eLong,   0,     20            },
-    { _T("MainFrame"),            _T("w"),          eLong,   0,     300           },
-    { _T("MainFrame"),            _T("h"),          eLong,   0,     300           },
-    { _T("OptDlg"),               _T("Height"),     eLong,   0,     250           },
-    { _T("OptDlg"),               _T("Width"),      eLong,   0,     400           },
-    { _T("Config"),               _T("Last"),       eString, 0,     0,  _T("")    },
+    { _T("Sash"),                 _T("Position"),   eLong,   false,    60            },
+    { _T("MainFrame"),            _T("x"),          eLong,   false,    10            },
+    { _T("MainFrame"),            _T("y"),          eLong,   false,    20            },
+    { _T("MainFrame"),            _T("w"),          eLong,   false,    300           },
+    { _T("MainFrame"),            _T("h"),          eLong,   false,    300           },
+#if defined( WANT_SCALING )
+    { _T("ScreenResol"),          _T("x"),          eLong,   false,    0             },
+    { _T("ScreenResol"),          _T("y"),          eLong,   false,    0             },
+#endif
+    { _T("OptDlg"),               _T("Height"),     eLong,   false,    250           },
+    { _T("OptDlg"),               _T("Width"),      eLong,   false,    400           },
+    { _T("Config"),               _T("Last"),       eString, false,    0,  _T("")    },
 
     // mail grid col widths, as string of numbers with | separator
-    { _T("MailGrid"),             _T("Cols"),       eString, 0,     0,
-      _T("40|40|40|80|120|120|80|80|120|80")                                      },
-    { _T("MailGrid"),             _T("Labels"),     eString, 0,     0,
-      _T("Delete|Bounce|Blacklist|Status|Size|From|Subject|To|Date|Account")      },
-    { _T("MaxTasks"),             _T("Number"),     eLong,   0,    20             },
+    { _T("MailGrid"),             _T("Cols"),       eString, false,    0,
+      _T("40|40|40|80|120|120|80|80|120|80")                                          },
+    { _T("MailGrid"),             _T("Labels"),     eString, false,    0,
+      _T("Delete|Bounce|Blacklist|Status|Size|From|Subject|To|Date|Account")          },
+    { _T("MaxTasks"),             _T("Number"),     eLong,   false,    20             },
 
-    { _T("LogFile"),              _T("Wanted"),     eBool,   false                },
-    { _T("Log"),                  _T("Verbosity"),  eLong,   0,    4              },
-    { _T("NewLog"),               _T("Frequency"),  eLong,   0,    0              },
-    { _T("LogDir"),               _T("Path"),       eString, 0,    0,  _T("")     },
-    { _T("LogDir"),               _T("UseDefault"), eBool,   true                 },
-    { _T("LastOptionDlg"),        _T("Tab"),        eLong,   0,    0              },
+    { _T("LogFile"),              _T("Wanted"),     eBool,   false                    },
+    { _T("Log"),                  _T("Verbosity"),  eLong,   false,    4              },
+    { _T("NewLog"),               _T("Frequency"),  eLong,   false,    0              },
+    { _T("LogDir"),               _T("Path"),       eString, false,    0,  _T("")     },
+    { _T("LogDir"),               _T("UseDefault"), eBool,   true                     },
+    { _T("LogRot"),               _T("MAX"),        eLong,   false,    10             },
+    { _T("LogRot"),               _T("Next"),       eLong,   false,    0              },
 
-    { _T("MailClient"),           _T("Launch"),     eBool,   true                 },
-    { _T("MailSound"),            _T("NewMail"),    eBool,   true                 },
-    { _T("MailCheck"),            _T("Startup"),    eBool,   false                },
-    { _T("MailCheck"),            _T("Schedule"),   eBool,   true                 },
-    { _T("MailCheck"),            _T("Interval"),   eLong,   0,    10             },
-    { _T("ServerCheck"),          _T("Schedule"),   eBool,   true                 },
-    { _T("ServerCheck"),          _T("Interval"),   eLong,   0,    10             },
-    { _T("Update"),               _T("AutoCheck"),  eBool,   true                 },
-    { _T("TOP_Lines"),            _T("Number"),     eLong,   0,    0              },
-    { _T("AcctDlg"),              _T("Height"),     eLong,   0,     250           },
-    { _T("AcctDlg"),              _T("Width"),      eLong,   0,     400           },
-    { _T("AccountGrid"),          _T("Cols"),       eString, 0,     0,   _T("40|40|40|80") },
-    { _T("Preview"),              _T("Height"),     eLong,   0,     250           },
-    { _T("Preview"),              _T("Width"),      eLong,   0,     400           },
-    { _T("Filter"),               _T("Height"),     eLong,   0,     250           },
-    { _T("Filter"),               _T("Width"),      eLong,   0,     400           },
-    { _T("Filter"),               _T("LastSel"),    eLong,   0,     0             },
-    { _T("Action"),               _T("Legit"),      eBool,   true                 },  // action: 'legit' implemented
-    { _T("Action"),               _T("Blacklist"),  eBool,   false                },  // action: 'blacklist' not implemented
-    { _T("Action"),               _T("Delete"),     eBool,   true                 },  // action: 'delete' implemented
-    { _T("Action"),               _T("Bounce"),     eBool,   false                },  // action: 'bounce' not implemented
-    { _T("POP3"),                 _T("TimeOut"),    eLong,   0,    10             },  // secs to wait for POP3 server response
-    { _T("Status"),               _T("DefColor"),   eString, 0,    0,   _T("#000000")  },  // default color for the status field - black
-    { _T("EmailClient"),          _T("Path"),       eString, 0,    0,   _T("")    },
-    { _T("AdvPop3Optn"),          _T("Height"),     eLong,   0,     250           },
-    { _T("AdvPop3Optn"),          _T("Width"),      eLong,   0,     400           },
+    { _T("LastOptionDlg"),        _T("Tab"),        eLong,   false,    0              },
+
+    { _T("MailClient"),           _T("Launch"),     eBool,   true                     },
+    { _T("MailSound"),            _T("NewMail"),    eBool,   true                     },
+    { _T("MailCheck"),            _T("Startup"),    eBool,   false                    },
+    { _T("MailCheck"),            _T("Schedule"),   eBool,   true                     },
+    { _T("MailCheck"),            _T("Interval"),   eLong,   false,    10             },
+    { _T("ServerCheck"),          _T("Schedule"),   eBool,   true                     },
+    { _T("ServerCheck"),          _T("Interval"),   eLong,   false,    10             },
+    { _T("Update"),               _T("AutoCheck"),  eBool,   true                     },
+    { _T("TOP_Lines"),            _T("Number"),     eLong,   false,    0              },
+    { _T("AcctDlg"),              _T("Height"),     eLong,   false,    250            },
+    { _T("AcctDlg"),              _T("Width"),      eLong,   false,    400            },
+    { _T("AccountGrid"),          _T("Cols"),       eString, false,    0,   _T("40|40|40|80") },
+    { _T("Preview"),              _T("Height"),     eLong,   false,    250            },
+    { _T("Preview"),              _T("Width"),      eLong,   false,    400            },
+    { _T("Filter"),               _T("Height"),     eLong,   false,    250            },
+    { _T("Filter"),               _T("Width"),      eLong,   false,    400            },
+    { _T("Filter"),               _T("LastSel"),    eLong,   false,    0              },
+    { _T("Action"),               _T("Legit"),      eBool,   true                     },  // action: 'legit' implemented
+    { _T("Action"),               _T("Blacklist"),  eBool,   false                    },  // action: 'blacklist' not implemented
+    { _T("Action"),               _T("Delete"),     eBool,   true                     },  // action: 'delete' implemented
+    { _T("Action"),               _T("Bounce"),     eBool,   false                    },  // action: 'bounce' not implemented
+    { _T("POP3"),                 _T("TimeOut"),    eLong,   false,    60             },  // secs to wait for POP3 server response
+    { _T("Status"),               _T("DefColor"),   eString, false,    0,   _T("#000000")  },  // default color for the status field - black
+    { _T("EmailClient"),          _T("Path"),       eString, false,    0,   _T("")    },
+    { _T("AdvPop3Optn"),          _T("Height"),     eLong,   false,    250            },
+    { _T("AdvPop3Optn"),          _T("Width"),      eLong,   false,    400            },
+#if defined( WANT_AUTO_START )
+    { _T("Start"),                _T("Auto"),       eBool,   true                     },  // start app with Windows
+#endif
   }
 };
 

@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------
- * Name:        wxMsOnAbout.cpp
+ * Name:        wxMsLog.cpp
  * Purpose:
  * Author:      A. Wiegert
  *
@@ -38,14 +38,16 @@
 // Note __VISUALC__ is defined by wxWidgets, not by MSVC IDE
 // and thus won't be defined until some wxWidgets headers are included
 #if defined( _MSC_VER )
-// this block needs to AFTER all headers
+// only good for MSVC
+// this block needs to go AFTER all headers
 #include <crtdbg.h>
 #ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+   #ifndef DBG_NEW
+      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+      #define new DBG_NEW
+   #endif
 #endif
 #endif
-
 // ------------------------------------------------------------------
 
 void MyFrame::OnOptionsLogClear( wxCommandEvent& WXUNUSED(event) )
@@ -145,15 +147,31 @@ void MyFrame::OnMenuItemOpenLogFiles(wxCommandEvent& WXUNUSED(event))
 // ------------------------------------------------------------------
 bool MyApp::CreateNewLog()
 {
+#if defined( WANT_LOG_CHAIN )
 #if defined( WANT_LOG_LIMIT )
   wxString wsLog2BigMsg = _("Old log too large; started new log");
   wxFileName wfnLogFile( m_wsCurLogFileName );
-  // make the limit just less them the attachment limit EMAIL_ATTACHMENT_LIMIT
+  // make the limit just less than the attachment limit EMAIL_ATTACHMENT_LIMIT => 5 MB
   if ( wfnLogFile.Exists() && (wfnLogFile.GetSize() > EMAIL_ATTACHMENT_LIMIT - 10 * 1024 ) )
   {
+#if defined( WANT_LOG_ROTATION )
+    wxFileName wfnOldLog( wfnLogFile);
+    wxString wsExt;
+    wsExt.Printf( _T("%s.%ld"), wfnLogFile.GetExt(), g_iniPrefs.data[IE_LOG_ROT_NEXT].dataCurrent.lVal );
+    wfnOldLog.SetExt( wsExt );
+    if( (g_iniPrefs.data[IE_LOG_ROT_NEXT].dataCurrent.lVal)++ >= g_iniPrefs.data[IE_LOG_ROT_MAX].dataCurrent.lVal )
+      g_iniPrefs.data[IE_LOG_ROT_NEXT].dataCurrent.lVal = 0l;
+    
+    if( ::wxFileExists( wfnOldLog.GetFullPath() ))
+      wxRemoveFile( wfnOldLog.GetFullPath() );
+    ::wxRenameFile( m_wsCurLogFileName, wfnOldLog.GetFullPath() );
+//    if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
+      wxLogMessage( _T("Log Rotation: %s" ), wfnOldLog.GetFullPath() );
+#else
     ::wxRemoveFile( m_wsCurLogFileName ); // remove file and start over
     if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
-      wxLogInfo( wsLog2BigMsg );
+      wxLogMessage( wsLog2BigMsg );
+#endif
   }
 #endif
   m_pAppLog = new MyFileLog( m_wsCurLogFileName );
@@ -171,13 +189,14 @@ bool MyApp::CreateNewLog()
     delete m_pAppLog;
     if ( g_iniPrefs.data[IE_LOG_VERBOSITY].dataCurrent.lVal > 4 )
     {
-      wxLogInfo( wsMsg );
+      wxLogMessage( wsMsg );
     }
     if ( wxMessageBox( wsMsg, _("Error"), wxYES_NO | wxICON_ERROR, NULL) != wxYES )
     {
       return false;
     }
   }
+#endif
   return true;
 }
 

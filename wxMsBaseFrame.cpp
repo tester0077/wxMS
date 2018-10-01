@@ -86,18 +86,18 @@ MyFrameBase::MyFrameBase(wxWindow* parent, wxWindowID id, const wxString& title,
     
     m_menuEmail->AppendSeparator();
     
-    m_menuEmailMarkTolDeleteAll = new wxMenuItem(m_menuEmail, wxID_MENU_MARK_ALL_DELETE, _("Mark all messages for deletion"), wxT(""), wxITEM_NORMAL);
-    m_menuEmail->Append(m_menuEmailMarkTolDeleteAll);
+    m_menuEmailMarkDeleteAll = new wxMenuItem(m_menuEmail, wxID_MENU_MARK_ALL_DELETE, _("Mark all messages for deletion\tCtrl-Shift-D"), _("Mark all messages for deletion"), wxITEM_NORMAL);
+    m_menuEmail->Append(m_menuEmailMarkDeleteAll);
     
-    m_menuEmailMarkBounceAll = new wxMenuItem(m_menuEmail, wxID_MENU_MARK_ALL_BOUNCE, _("Mark all messages for bouncing"), wxT(""), wxITEM_NORMAL);
+    m_menuEmailMarkBounceAll = new wxMenuItem(m_menuEmail, wxID_MENU_MARK_ALL_BOUNCE, _("Mark all messages for bouncing\tCtrl-Shift-B"), _("Mark all messages for bouncing"), wxITEM_NORMAL);
     m_menuEmail->Append(m_menuEmailMarkBounceAll);
     
     m_menuEmail->AppendSeparator();
     
-    m_menuItemUnmarkAllDelete = new wxMenuItem(m_menuEmail, wxID_MENU_CLEAR_MARK_ALL_DELETE, _("Clear all 'Delete' boxes"), _("Clear all 'delete' check boxes"), wxITEM_NORMAL);
-    m_menuEmail->Append(m_menuItemUnmarkAllDelete);
+    m_menuItemClearAllDelete = new wxMenuItem(m_menuEmail, wxID_MENU_CLEAR_MARK_ALL_DELETE, _("Clear all 'Delete' check boxes\tAlt-Shift-D"), _("Clear all 'delete' check boxes"), wxITEM_NORMAL);
+    m_menuEmail->Append(m_menuItemClearAllDelete);
     
-    m_menuItemClearAllBounce = new wxMenuItem(m_menuEmail, wxID_MENU_CLEAR_MARK_ALL_BOUNCE, _("Clear all 'Bounce' boxes"), _("Clear all 'Bounce' check boxes"), wxITEM_NORMAL);
+    m_menuItemClearAllBounce = new wxMenuItem(m_menuEmail, wxID_MENU_CLEAR_MARK_ALL_BOUNCE, _("Clear all 'Bounce' check boxes\tAlt-Shift-B"), _("Clear all 'Bounce' check boxes"), wxITEM_NORMAL);
     m_menuEmail->Append(m_menuItemClearAllBounce);
     
     m_menuEmail->AppendSeparator();
@@ -124,11 +124,6 @@ MyFrameBase::MyFrameBase(wxWindow* parent, wxWindowID id, const wxString& title,
     
     m_menuItemLogClear = new wxMenuItem(m_menuOptions, wxID_LOG_CLEAR, _("Clear Log\tAlt-C"), wxT(""), wxITEM_NORMAL);
     m_menuOptions->Append(m_menuItemLogClear);
-    
-    m_menuOptions->AppendSeparator();
-    
-    m_menuItemRunUT = new wxMenuItem(m_menuOptions, wxID_TOOL_RUN_UT, _("Run UT"), _("Run UT"), wxITEM_NORMAL);
-    m_menuOptions->Append(m_menuItemRunUT);
     
     m_menuTools = new wxMenu();
     m_menubarMain->Append(m_menuTools, _("Tools"));
@@ -168,7 +163,7 @@ MyFrameBase::MyFrameBase(wxWindow* parent, wxWindowID id, const wxString& title,
     m_toolBarMain = this->CreateToolBar(wxTB_TEXT|wxTB_HORIZONTAL, wxID_ANY);
     m_toolBarMain->SetToolBitmapSize(wxSize(32,24));
     
-    m_toolBarMain->AddTool(wxID_CHECK_MAIL, _("Check Mail"), wxXmlResource::Get()->LoadBitmap(wxT("mail_get")), wxNullBitmap, wxITEM_NORMAL, _("Check Default Mail Account (F5)"), wxT(""), NULL);
+    m_toolBarMain->AddTool(wxID_CHECK_MAIL, _("Check Mail"), wxXmlResource::Get()->LoadBitmap(wxT("mail_get")), wxNullBitmap, wxITEM_NORMAL, _("Check Selected Mail Account(s) (F5)"), wxT(""), NULL);
     
     m_toolBarMain->AddTool(wxID_STOP, _("Stop"), wxXmlResource::Get()->LoadBitmap(wxT("mail_delete")), wxNullBitmap, wxITEM_NORMAL, _("Stop processing ..."), _("Stop"), NULL);
     
@@ -270,12 +265,12 @@ MyFrameBase::MyFrameBase(wxWindow* parent, wxWindowID id, const wxString& title,
     this->Connect(m_menuItemEmailDelete->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiEmailDelete), NULL, this);
     this->Connect(m_menuEmailPreview->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnEmailPreview), NULL, this);
     this->Connect(m_menuEmailPreview->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiPreview), NULL, this);
-    this->Connect(m_menuEmailMarkTolDeleteAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkToDeleteAll), NULL, this);
-    this->Connect(m_menuEmailMarkTolDeleteAll->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiMarkDeleteAll), NULL, this);
-    this->Connect(m_menuEmailMarkBounceAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkToBounceAll), NULL, this);
+    this->Connect(m_menuEmailMarkDeleteAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkDeleteAll), NULL, this);
+    this->Connect(m_menuEmailMarkDeleteAll->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiMarkDeleteAll), NULL, this);
+    this->Connect(m_menuEmailMarkBounceAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkBounceAll), NULL, this);
     this->Connect(m_menuEmailMarkBounceAll->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiMarkBounceAll), NULL, this);
-    this->Connect(m_menuItemUnmarkAllDelete->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearAllDelete), NULL, this);
-    this->Connect(m_menuItemUnmarkAllDelete->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiClearAllDelete), NULL, this);
+    this->Connect(m_menuItemClearAllDelete->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearAllDelete), NULL, this);
+    this->Connect(m_menuItemClearAllDelete->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiClearAllDelete), NULL, this);
     this->Connect(m_menuItemClearAllBounce->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearAllBounce), NULL, this);
     this->Connect(m_menuItemClearAllBounce->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiClearAllBounce), NULL, this);
     this->Connect(m_menuEmailClearList->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearList), NULL, this);
@@ -345,12 +340,12 @@ MyFrameBase::~MyFrameBase()
     this->Disconnect(m_menuItemEmailDelete->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiEmailDelete), NULL, this);
     this->Disconnect(m_menuEmailPreview->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnEmailPreview), NULL, this);
     this->Disconnect(m_menuEmailPreview->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiPreview), NULL, this);
-    this->Disconnect(m_menuEmailMarkTolDeleteAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkToDeleteAll), NULL, this);
-    this->Disconnect(m_menuEmailMarkTolDeleteAll->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiMarkDeleteAll), NULL, this);
-    this->Disconnect(m_menuEmailMarkBounceAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkToBounceAll), NULL, this);
+    this->Disconnect(m_menuEmailMarkDeleteAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkDeleteAll), NULL, this);
+    this->Disconnect(m_menuEmailMarkDeleteAll->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiMarkDeleteAll), NULL, this);
+    this->Disconnect(m_menuEmailMarkBounceAll->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnMarkBounceAll), NULL, this);
     this->Disconnect(m_menuEmailMarkBounceAll->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiMarkBounceAll), NULL, this);
-    this->Disconnect(m_menuItemUnmarkAllDelete->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearAllDelete), NULL, this);
-    this->Disconnect(m_menuItemUnmarkAllDelete->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiClearAllDelete), NULL, this);
+    this->Disconnect(m_menuItemClearAllDelete->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearAllDelete), NULL, this);
+    this->Disconnect(m_menuItemClearAllDelete->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiClearAllDelete), NULL, this);
     this->Disconnect(m_menuItemClearAllBounce->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearAllBounce), NULL, this);
     this->Disconnect(m_menuItemClearAllBounce->GetId(), wxEVT_UPDATE_UI, wxUpdateUIEventHandler(MyFrameBase::OnUpdateUiClearAllBounce), NULL, this);
     this->Disconnect(m_menuEmailClearList->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrameBase::OnClearList), NULL, this);
@@ -592,9 +587,9 @@ MyBaseAccountsDetailsDialog::MyBaseAccountsDetailsDialog(wxWindow* parent, wxWin
     
     gSizer28->Add(m_buttonTestPop3Server, 0, wxALL, WXC_FROM_DIP(5));
     
-    m_staticTextTestResult = new wxStaticText(m_panelIncomingMail, wxID_ANY, _("Result:"), wxDefaultPosition, wxDLG_UNIT(m_panelIncomingMail, wxSize(-1,-1)), 0);
+    m_staticTextTestResult = new wxStaticText(m_panelIncomingMail, wxID_ANY, _("unknown"), wxDefaultPosition, wxDLG_UNIT(m_panelIncomingMail, wxSize(-1,-1)), 0);
     
-    gSizer28->Add(m_staticTextTestResult, 0, wxALL, WXC_FROM_DIP(5));
+    gSizer28->Add(m_staticTextTestResult, 0, wxALL|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(5));
     
     m_panelOutgoingMail = new wxPanel(m_notebookAcctDetails, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_notebookAcctDetails, wxSize(-1, -1)), wxTAB_TRAVERSAL);
     m_notebookAcctDetails->AddPage(m_panelOutgoingMail, _("Outgoing Mail"), false);
@@ -740,11 +735,12 @@ MyDialogUpdate::MyDialogUpdate(wxWindow* parent, wxWindowID id, const wxString& 
     boxSizer253->Add(m_staticText255, 0, wxALL, WXC_FROM_DIP(5));
     
     m_hyperlinkwxMS = new wxHyperlinkCtrl(this, wxID_ANY, _("wxMS"), wxT("http://columbinehoney.net/index.php/software/wxwidgets/wxms"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxHL_DEFAULT_STYLE);
+    m_hyperlinkwxMS->Enable(false);
     m_hyperlinkwxMS->SetNormalColour(wxColour(wxT("#0000FF")));
     m_hyperlinkwxMS->SetHoverColour(wxColour(wxT("#0000FF")));
     m_hyperlinkwxMS->SetVisitedColour(wxColour(wxT("#FF0000")));
     
-    boxSizer253->Add(m_hyperlinkwxMS, 0, wxALL, WXC_FROM_DIP(5));
+    boxSizer253->Add(m_hyperlinkwxMS, 0, wxTOP|wxBOTTOM, WXC_FROM_DIP(5));
     
     m_staticText259 = new wxStaticText(this, wxID_ANY, _("web site"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
@@ -758,24 +754,34 @@ MyDialogUpdate::MyDialogUpdate(wxWindow* parent, wxWindowID id, const wxString& 
     
     boxSizer249->Add(m_staticLine263, 0, wxALL|wxEXPAND, WXC_FROM_DIP(5));
     
-    m_staticText265 = new wxStaticText(this, wxID_ANY, _("Please note:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    m_staticText265 = new wxStaticText(this, wxID_ANY, _("Please note:\nAutomatic checking for updates at startup can be\nenabled or disabled in the 'Options' dialog"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxALIGN_CENTRE);
     
     boxSizer249->Add(m_staticText265, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
-    m_staticText267 = new wxStaticText(this, wxID_ANY, _("Automatic checking for updates at startup can \n be enabled or disabled in the 'Options' dialog\n"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    wxBoxSizer* boxSizer447 = new wxBoxSizer(wxVERTICAL);
     
-    boxSizer249->Add(m_staticText267, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    boxSizer249->Add(boxSizer447, 1, wxEXPAND, WXC_FROM_DIP(5));
+    
+    m_checkBoxCheckAtStartup = new wxCheckBox(this, wxID_ANY, _("Check at startup"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    m_checkBoxCheckAtStartup->SetValue(false);
+    
+    boxSizer447->Add(m_checkBoxCheckAtStartup, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    
+    m_staticLine445 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxLI_HORIZONTAL);
+    
+    boxSizer249->Add(m_staticLine445, 0, wxALL|wxEXPAND, WXC_FROM_DIP(5));
     
     m_stdBtnSizer269 = new wxStdDialogButtonSizer();
     
     boxSizer249->Add(m_stdBtnSizer269, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
-    m_button271 = new wxButton(this, wxID_OK, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
-    m_stdBtnSizer269->AddButton(m_button271);
+    m_buttonOK = new wxButton(this, wxID_OK, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
+    m_buttonOK->SetDefault();
+    m_stdBtnSizer269->AddButton(m_buttonOK);
     m_stdBtnSizer269->Realize();
     
     SetName(wxT("MyDialogUpdate"));
-    SetSize(333,239);
+    SetSize(300,400);
     if (GetSizer()) {
          GetSizer()->Fit(this);
     }
@@ -897,10 +903,23 @@ wxMsMessagePreviewBase::wxMsMessagePreviewBase(wxWindow* parent, wxWindowID id, 
     
     boxSizer313->Add(m_textCtrlMessageSource, 1, wxEXPAND, WXC_FROM_DIP(5));
     
+    wxBoxSizer* boxSizer443 = new wxBoxSizer(wxVERTICAL);
+    
+    boxSizer313->Add(boxSizer443, 0, wxEXPAND, WXC_FROM_DIP(5));
+    
+    wxBoxSizer* boxSizer441 = new wxBoxSizer(wxHORIZONTAL);
+    
+    boxSizer443->Add(boxSizer441, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    
     m_buttonSaveMimeSource2File = new wxButton(m_panelMessageSource, wxID_ANY, _("Save  to file"), wxDefaultPosition, wxDLG_UNIT(m_panelMessageSource, wxSize(-1,-1)), 0);
     m_buttonSaveMimeSource2File->SetToolTip(_("Save Mime source to a file."));
     
-    boxSizer313->Add(m_buttonSaveMimeSource2File, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    boxSizer441->Add(m_buttonSaveMimeSource2File, 0, 0, WXC_FROM_DIP(5));
+    
+    m_buttonCopySource2Clipboard = new wxButton(m_panelMessageSource, wxID_ANY, _("Copy to Clpbrd"), wxDefaultPosition, wxDLG_UNIT(m_panelMessageSource, wxSize(-1,-1)), 0);
+    m_buttonCopySource2Clipboard->SetToolTip(_("Copy source text to clipboard"));
+    
+    boxSizer441->Add(m_buttonCopySource2Clipboard, 0, 0, WXC_FROM_DIP(5));
     
     m_panelMimeStructure = new wxPanel(m_notebookMessagePreview, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(m_notebookMessagePreview, wxSize(-1,-1)), wxTAB_TRAVERSAL);
     m_notebookMessagePreview->AddPage(m_panelMimeStructure, _("Mime Structure"), false);
@@ -920,15 +939,6 @@ wxMsMessagePreviewBase::wxMsMessagePreviewBase(wxWindow* parent, wxWindowID id, 
     m_stdBtnSizer319->AddButton(m_button321);
     m_stdBtnSizer319->Realize();
     
-    
-    #if wxVERSION_NUMBER >= 2900
-    if(!wxPersistenceManager::Get().Find(m_notebookMessagePreview)){
-        wxPersistenceManager::Get().RegisterAndRestore(m_notebookMessagePreview);
-    } else {
-        wxPersistenceManager::Get().Restore(m_notebookMessagePreview);
-    }
-    #endif
-    
     SetName(wxT("wxMsMessagePreviewBase"));
     SetSize(500,300);
     if (GetSizer()) {
@@ -939,21 +949,16 @@ wxMsMessagePreviewBase::wxMsMessagePreviewBase(wxWindow* parent, wxWindowID id, 
     } else {
         CentreOnScreen(wxBOTH);
     }
-#if wxVERSION_NUMBER >= 2900
-    if(!wxPersistenceManager::Get().Find(this)) {
-        wxPersistenceManager::Get().RegisterAndRestore(this);
-    } else {
-        wxPersistenceManager::Get().Restore(this);
-    }
-#endif
     // Connect events
     m_buttonSaveMimeSource2File->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxMsMessagePreviewBase::OnSaveMimeSource2File), NULL, this);
+    m_buttonCopySource2Clipboard->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxMsMessagePreviewBase::OnCopySource2Clipboard), NULL, this);
     
 }
 
 wxMsMessagePreviewBase::~wxMsMessagePreviewBase()
 {
     m_buttonSaveMimeSource2File->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxMsMessagePreviewBase::OnSaveMimeSource2File), NULL, this);
+    m_buttonCopySource2Clipboard->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxMsMessagePreviewBase::OnCopySource2Clipboard), NULL, this);
     
 }
 
@@ -1100,5 +1105,68 @@ wxMsBasePasswordPromptDlg::wxMsBasePasswordPromptDlg(wxWindow* parent, wxWindowI
 }
 
 wxMsBasePasswordPromptDlg::~wxMsBasePasswordPromptDlg()
+{
+}
+
+MyDialogNoUpdate::MyDialogNoUpdate(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+    : wxDialog(parent, id, title, pos, size, style)
+{
+    if ( !bBitmapLoaded ) {
+        // We need to initialise the default bitmap handler
+        wxXmlResource::Get()->AddHandler(new wxBitmapXmlHandler);
+        wxC10F1InitBitmapResources();
+        bBitmapLoaded = true;
+    }
+    
+    wxBoxSizer* boxSizer2491 = new wxBoxSizer(wxVERTICAL);
+    this->SetSizer(boxSizer2491);
+    
+    m_staticTextNoNewVersion = new wxStaticText(this, wxID_ANY, _("No newer version found!"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    
+    boxSizer2491->Add(m_staticTextNoNewVersion, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    
+    m_staticLine2638 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxLI_HORIZONTAL);
+    
+    boxSizer2491->Add(m_staticLine2638, 0, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    
+    m_staticTextNote = new wxStaticText(this, wxID_ANY, _("Please note:\nAutomatic checking for updates at startup can be\nenabled or disabled in the 'Options' dialog"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxALIGN_CENTRE);
+    
+    boxSizer2491->Add(m_staticTextNote, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    
+    wxBoxSizer* boxSizer44710 = new wxBoxSizer(wxVERTICAL);
+    
+    boxSizer2491->Add(boxSizer44710, 1, wxEXPAND, WXC_FROM_DIP(5));
+    
+    m_checkBoxCheckAtStartup = new wxCheckBox(this, wxID_ANY, _("Check at startup"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    m_checkBoxCheckAtStartup->SetValue(false);
+    
+    boxSizer44710->Add(m_checkBoxCheckAtStartup, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    
+    m_staticLine44512 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), wxLI_HORIZONTAL);
+    
+    boxSizer2491->Add(m_staticLine44512, 0, wxALL|wxEXPAND, WXC_FROM_DIP(5));
+    
+    m_stdBtnSizer26913 = new wxStdDialogButtonSizer();
+    
+    boxSizer2491->Add(m_stdBtnSizer26913, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    
+    m_buttonOK = new wxButton(this, wxID_OK, wxT(""), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1, -1)), 0);
+    m_buttonOK->SetDefault();
+    m_stdBtnSizer26913->AddButton(m_buttonOK);
+    m_stdBtnSizer26913->Realize();
+    
+    SetName(wxT("MyDialogNoUpdate"));
+    SetSize(300,400);
+    if (GetSizer()) {
+         GetSizer()->Fit(this);
+    }
+    if(GetParent()) {
+        CentreOnParent(wxBOTH);
+    } else {
+        CentreOnScreen(wxBOTH);
+    }
+}
+
+MyDialogNoUpdate::~MyDialogNoUpdate()
 {
 }

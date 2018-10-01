@@ -20,7 +20,7 @@
 #include "wx/cshelp.h"
 #include "wx/html/helpctrl.h"
 #endif
-
+#include <wx/stdpaths.h>
 #include "wxMsPop3MsgListh.h"
 
 #include "wxMsh.h"
@@ -91,6 +91,9 @@ public:
   virtual ~MyFrame();
 
   wxString m_frameProgName;
+  int      m_iNIdleCalls;
+  bool     m_bNeedStartupMailCheck;
+  bool     m_bNeedStartupNewversionCheck;
 
 #if defined( WANT_HELP )
   wxHelpControllerHelpProvider* m_pProvider;
@@ -124,9 +127,15 @@ public:
   bool              m_bFoundHelpFile;
 #endif
 
-  bool            m_bRunning;
-  bool            m_bStop;      // set true by stop button on GUI
-  bool            m_bCancelled;
+  bool              m_bRunning;
+  bool              m_bStop;      // set true by stop button on GUI
+
+  // was the worker thread cancelled by user?
+  bool              m_bCancelled;
+  wxCriticalSection m_csCancelled;        // protects m_cancelled
+  // accessors for MyWorkerThread (called in its context!)
+  bool Cancelled();
+
 #if defined( WANT_LOG_WIN )
   wxLog           *m_pLogOld;
   wxWindow        *m_pLogWindowSave; ///< ptr to log window when not shown
@@ -151,9 +160,9 @@ public:
   void ThreadParseUidlData( Pop3CommandData &ar_Pop3CommandData,
     wxString wsUidls,      wxArrayString &ar_wasUidls,
     wxString wsListResult, wxArrayString &ar_wasList, wxArrayLong &ar_walSizes,
-    wxString wsStatResult);
-  void ThreadParseUidls( wxString a_wsUidlResult, wxArrayString &ar_wasUidls );
-  unsigned int GetSeqNoFromUidl( wxString wsUidl, wxArrayString &ar_wasUidls );
+    wxString wsStatResult );
+  void ThreadParseUidls( wxString a_wsUidlResult, wxArrayString &ar_wasUidls, wxString wsWhereFrom );
+  long GetSeqNoFromUidl( wxString wsUidl, wxArrayString &ar_wasUidls );
   void ThreadGetCurlPop3OneMessageBody( Pop3CommandData &ar_Pop3CommandData );
   void OnUpdateDisplay( wxThreadEvent& event);
   void ThreadCurlPop3DeleteMessage( Pop3CommandData &ar_Pop3CommandData );
@@ -186,6 +195,7 @@ public:
   wxString m_wsTextBody;
   wxString m_wsHtmlBody;
   int      m_iNAttachments;
+  size_t   m_sz2Delete;
 
   // threadhelper stuff
   void RunLibcurlThread();
@@ -236,7 +246,7 @@ public:
   void OnMarkToBounceSelected( wxCommandEvent& event);
   void OnMarkToBounceAll( wxCommandEvent& event);
   void OnMarkToDeleteSelected( wxCommandEvent& event);
-  void OnMarkToDeleteAll( wxCommandEvent& event);
+  void OnMarkDeleteAll( wxCommandEvent& event);
   void OnClearAllDelete( wxCommandEvent& event);
   void OnClearAllBounce( wxCommandEvent& event);
 
@@ -249,7 +259,7 @@ public:
   int     m_iRightClickRow;
   void ShowContextMenu( const wxPoint& pos );
   void OnContextDelMsg( wxCommandEvent& event );
-  bool GetAccountInfo( wxString &wsAccountList );
+  bool GetAccountInfo();
 
   void OnContextMarkDelMsg( wxCommandEvent& event );
   void OnContextMarkBounceMsg( wxCommandEvent& event );
@@ -286,7 +296,7 @@ public:
   void OnUpdateUiToolsBlackFriendsList(wxUpdateUIEvent& event);
   void OnUpdateUiToolsStop(wxUpdateUIEvent& event);
   void OnUpdateUiEmailDelete(wxUpdateUIEvent& event);
-  bool Check4Update();
+  bool Check4Update( bool bFromUser );
   void OnLists(wxCommandEvent& event);    // friends & black list handler
 
   // mailcheck timer
@@ -312,6 +322,7 @@ public:
 #if defined( WANT_DBGRPRT )
   void OnCauseException( wxCommandEvent& event );
 #endif
+  bool    m_bAnyAccountsActive;
 
 private:  //////////////////////////////////////////////////////
   // Event handlers - these functions should _not_ be virtual)
@@ -324,6 +335,10 @@ private:  //////////////////////////////////////////////////////
   void OnMenuAccounts( wxCommandEvent& event );
   void OnMailGridColSize( wxGridSizeEvent& ev );
   void OnMailGridMouseWheel(wxMouseEvent& event);
+
+#if defined( WANT_AUTO_START )
+  HRESULT CreateLink(LPCWSTR lpszPathObj, LPCSTR lpszPathLink, LPCWSTR lpszDesc);
+#endif
 
   // the data for the Entry() routine,
   // intended to protect the message list m_Pop3MsgList
