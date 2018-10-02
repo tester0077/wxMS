@@ -63,37 +63,14 @@ public:
 
   wxString m_wsLibcurlVersion;
   wxString m_wsMimeticVersion;
-//  wxString m_wsSqliteSource;
 };
 
 // ------------------------------------------------------------------
 wxMsAboutDlg::wxMsAboutDlg(wxWindow* parent) :
   wxMsAboutDlgBase( parent  )
 {
-#if 0
-  int      m_rc;
-  try
-  {
-    wxSQLite3Database::InitializeSQLite();
-    wxSQLite3Database db;
-    m_wswxSqlite3Version << " " << (const char*) wxSQLite3Database::GetWrapperVersion().mb_str(wxConvUTF8);
-    m_wsSqlite3Version   << " " << (const char*) db.GetVersion().mb_str(wxConvUTF8);
-    m_wsSqliteSource     << " " << (const char*) db.GetSourceId().mb_str(wxConvUTF8);
-}
-  catch (wxSQLite3Exception& e)
-  {
-    m_rc = e.GetErrorCode();
-  }
-  try
-  {
-    // Before shutdown of SQLite ALL database connections should be closed.
-    wxSQLite3Database::ShutdownSQLite();
-  }
-  catch (wxSQLite3Exception& e)
-  {
-    m_rc = e.GetErrorCode();
-  }
-#endif
+  m_wsLibcurlVersion = curl_version();
+  m_wsMimeticVersion = mimetic::version.str();
 }
 
 // ------------------------------------------------------------------
@@ -101,7 +78,8 @@ void MyFrame::OnAbout( wxCommandEvent& event )
 {
   wxMsAboutDlg dlg( this );
 
-  dlg.m_wsLibcurlVersion = curl_version( );
+//  dlg.m_wsLibcurlVersion = curl_version();
+
   // build information
 #if defined( WANT_EXE_LINK_DATE )
   wxString wsBuildDate;
@@ -118,7 +96,6 @@ void MyFrame::OnAbout( wxCommandEvent& event )
     wsYear = wsCopyrightYear1 + _T(" - ") + wsYear;
     wsIndent = wxEmptyString;
   }
-//  dlg.GetStaticTextDate()->SetLabel( wsBuildDate );
 #else
   wxString wsBuildDate( _T("unknown") );
   wxString wsYear( _T("unknown") );
@@ -139,6 +116,19 @@ void MyFrame::OnAbout( wxCommandEvent& event )
   wsT.Printf(_("wxWidgets: %d.%d.%d"), wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
   dlg.GetStaticTextwxWidgetsVersion()->SetLabel(wsT);
 
+  // Compiler
+  wxString wsCompiler = _("unknown");
+#if defined( _MSC_VER )
+  wsCompiler = _T("MSVC 2010");
+#if _MSC_VER >= 1900
+  wsCompiler = _T("MSVC 2015");
+#elif _MSC_VER >= 1600
+  wsCompiler = _T("MSVC 2010");
+#endif
+#else // asume it is Linux flavor
+#endif
+  wsT.Printf(_("Compiler: %s"), wsCompiler);
+  dlg.GetStaticTextCompiler()->SetLabel(wsT);
   // OS
 #if defined( _MSC_VER )
   wxPlatformInfo wxPI = wxPlatformInfo::Get();
@@ -175,7 +165,7 @@ void MyFrame::OnAbout( wxCommandEvent& event )
       wsOS = _T("unknown");
       break;
     }
-    wsT.Printf(_("\nRunning on %s - %s (%d.%d), %s-Bit Arch."), wxPI.GetOperatingSystemFamilyName(),
+    wsT.Printf(_("\nRunning on %s - %s (%d.%d), %s-Bit"), wxPI.GetOperatingSystemFamilyName(),
     wsOS, wxPI.GetOSMajorVersion(), wxPI.GetOSMinorVersion(),
     (wxPI.GetArchitecture() == wxARCH_64) ? _T("64") : _T("32"),
     wxPI.GetEndiannessName(), wxPI.GetPortIdName());
@@ -197,7 +187,7 @@ void MyFrame::OnAbout( wxCommandEvent& event )
 #endif
   dlg.GetStaticTextOsPort()->SetLabel(wsT);
   // wxWidgets version
-  wsT.Printf( _T(" %d.%d.%d"), wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER );
+  wsT.Printf( _T("wxWidgets: %d.%d.%d"), wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER );
   dlg.GetStaticTextwxWidgetsVersion()->SetLabel( wsT );
 
   // libcurl version
@@ -215,9 +205,10 @@ void MyFrame::OnAbout( wxCommandEvent& event )
 //  dlg.GetNotebookData()->DeletePage(3); // license // start at highest #
 //  dlg.GetNotebookData()->DeletePage(2); // Credits
   dlg.GetNotebookData()->DeletePage(1); // Artists
-
+  dlg.EnableLayoutAdaptation( true );
   dlg.DoLayoutAdaptation();
   dlg.GetNotebookData()->SetSelection(3); // System Info page
+  dlg.Fit();
 	dlg.ShowModal();
 }
 

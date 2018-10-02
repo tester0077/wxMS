@@ -4,8 +4,8 @@
 // Do not modify this file by hand!
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _WXMS_WXMSABOUT_WXMSABOUTDLG_BASE_CLASSES_H
-#define _WXMS_WXMSABOUT_WXMSABOUTDLG_BASE_CLASSES_H
+#ifndef _WXMS_2015_WXMSABOUT_WXMSABOUTDLG_BASE_CLASSES_H
+#define _WXMS_2015_WXMSABOUT_WXMSABOUTDLG_BASE_CLASSES_H
 
 #include <wx/settings.h>
 #include <wx/xrc/xmlres.h>
@@ -52,7 +52,6 @@ public:
 protected:
     wxStaticBitmap* m_staticBitmapAbout;
     wxStaticText* m_staticTextProgName;
-    wxStaticText* m_staticTextAppNameLine1;
     wxStaticText* m_staticTextAppNameLine2;
     wxStaticText* m_staticTextCopyright;
     wxStaticText* m_staticTextVersion;
@@ -74,6 +73,7 @@ protected:
     wxStaticText* m_staticTextwxWidgetsVersion;
     wxStaticText* m_staticTextLibcurlVersion;
     wxStaticText* m_staticTextMimeticVersion;
+    wxStaticText* m_staticTextCompiler;
     wxStaticText* m_staticTextOS;
     wxStaticText* m_staticTextOsPort;
     wxStaticText* m_staticTextConfigDir;
@@ -84,7 +84,6 @@ protected:
 public:
     wxStaticBitmap* GetStaticBitmapAbout() { return m_staticBitmapAbout; }
     wxStaticText* GetStaticTextProgName() { return m_staticTextProgName; }
-    wxStaticText* GetStaticTextAppNameLine1() { return m_staticTextAppNameLine1; }
     wxStaticText* GetStaticTextAppNameLine2() { return m_staticTextAppNameLine2; }
     wxStaticText* GetStaticTextCopyright() { return m_staticTextCopyright; }
     wxStaticText* GetStaticTextVersion() { return m_staticTextVersion; }
@@ -104,13 +103,14 @@ public:
     wxStaticText* GetStaticTextwxWidgetsVersion() { return m_staticTextwxWidgetsVersion; }
     wxStaticText* GetStaticTextLibcurlVersion() { return m_staticTextLibcurlVersion; }
     wxStaticText* GetStaticTextMimeticVersion() { return m_staticTextMimeticVersion; }
+    wxStaticText* GetStaticTextCompiler() { return m_staticTextCompiler; }
     wxStaticText* GetStaticTextOS() { return m_staticTextOS; }
     wxStaticText* GetStaticTextOsPort() { return m_staticTextOsPort; }
     wxStaticText* GetStaticTextConfigDir() { return m_staticTextConfigDir; }
     wxPanel* GetPanelSystemInfo() { return m_panelSystemInfo; }
     wxNotebook* GetNotebookData() { return m_notebookData; }
     wxButton* GetButtonOK() { return m_buttonOK; }
-    wxMsAboutDlgBase(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("About wxGTM"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(-1,-1), long style = wxDEFAULT_DIALOG_STYLE|wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX);
+    wxMsAboutDlgBase(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("About wxMS"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(-1,-1), long style = wxDEFAULT_DIALOG_STYLE|wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX);
     virtual ~wxMsAboutDlgBase();
 };
 

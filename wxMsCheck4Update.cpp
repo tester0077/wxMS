@@ -83,8 +83,7 @@ bool MyFrame::Check4Update( bool bFromUser )
 #if defined (_DEBUG )
     wsT.Printf( _("%s, Line: %ld - Got error %d %s from libcurl interface!\n") +
       _("Likely cannot reach the remote site %s"), 
-      __FILE__, __LINE__, code, curl_easy_strerror(code), wsUrl
-    );
+      __FILE__, __LINE__, code, curl_easy_strerror(code), wsUrl );
     wsT.Printf( wsT );
     wxMessageBox( wsT, "Error", wxOK );
 #endif

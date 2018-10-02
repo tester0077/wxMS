@@ -1,7 +1,7 @@
 {
  "metadata": {
   "m_generatedFilesDir": ".",
-  "m_objCounter": 131,
+  "m_objCounter": 133,
   "m_includeFiles": [],
   "m_bitmapFunction": "wxCCE80InitBitmapResources",
   "m_bitmapsFile": "wxMsAboutDlgBase_bitmaps.cpp",
@@ -80,7 +80,7 @@
     }, {
      "type": "string",
      "m_label": "Title:",
-     "m_value": "About wxGTM"
+     "m_value": "About wxMS"
     }, {
      "type": "virtualFolderPicker",
      "m_label": "Virtual Folder:",
@@ -212,7 +212,7 @@
            "gbSpan": "1,1",
            "gbPosition": "0,0",
            "m_styles": [],
-           "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxALIGN_CENTER_VERTICAL"],
+           "m_sizerFlags": ["wxRIGHT", "wxALIGN_CENTER_VERTICAL"],
            "m_properties": [{
              "type": "winid",
              "m_label": "ID:",
@@ -283,7 +283,7 @@
            "gbSpan": "1,1",
            "gbPosition": "0,0",
            "m_styles": [],
-           "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM"],
+           "m_sizerFlags": [],
            "m_properties": [{
              "type": "string",
              "m_label": "Name:",
@@ -329,7 +329,7 @@
              "gbSpan": "1,1",
              "gbPosition": "0,0",
              "m_styles": [],
-             "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxALIGN_CENTER_HORIZONTAL"],
+             "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
              "m_properties": [{
                "type": "winid",
                "m_label": "ID:",
@@ -404,82 +404,7 @@
              "gbSpan": "1,1",
              "gbPosition": "0,0",
              "m_styles": [],
-             "m_sizerFlags": ["wxLEFT", "wxALIGN_CENTER_HORIZONTAL"],
-             "m_properties": [{
-               "type": "winid",
-               "m_label": "ID:",
-               "m_winid": "wxID_ANY"
-              }, {
-               "type": "string",
-               "m_label": "Size:",
-               "m_value": "-1,-1"
-              }, {
-               "type": "string",
-               "m_label": "Minimum Size:",
-               "m_value": "-1,-1"
-              }, {
-               "type": "string",
-               "m_label": "Name:",
-               "m_value": "m_staticTextAppNameLine1"
-              }, {
-               "type": "multi-string",
-               "m_label": "Tooltip:",
-               "m_value": ""
-              }, {
-               "type": "colour",
-               "m_label": "Bg Colour:",
-               "colour": "<Default>"
-              }, {
-               "type": "colour",
-               "m_label": "Fg Colour:",
-               "colour": "<Default>"
-              }, {
-               "type": "font",
-               "m_label": "Font:",
-               "m_value": ""
-              }, {
-               "type": "bool",
-               "m_label": "Hidden",
-               "m_value": false
-              }, {
-               "type": "bool",
-               "m_label": "Disabled",
-               "m_value": false
-              }, {
-               "type": "bool",
-               "m_label": "Focused",
-               "m_value": false
-              }, {
-               "type": "string",
-               "m_label": "Class Name:",
-               "m_value": ""
-              }, {
-               "type": "string",
-               "m_label": "Include File:",
-               "m_value": ""
-              }, {
-               "type": "string",
-               "m_label": "Style:",
-               "m_value": ""
-              }, {
-               "type": "multi-string",
-               "m_label": "Label:",
-               "m_value": "wxWidgets Based Mail"
-              }, {
-               "type": "string",
-               "m_label": "Wrap:",
-               "m_value": "-1"
-              }],
-             "m_events": [],
-             "m_children": []
-            }, {
-             "m_type": 4405,
-             "proportion": 0,
-             "border": 5,
-             "gbSpan": "1,1",
-             "gbPosition": "0,0",
-             "m_styles": [],
-             "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxALIGN_CENTER_HORIZONTAL"],
+             "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
              "m_properties": [{
                "type": "winid",
                "m_label": "ID:",
@@ -539,7 +464,7 @@
               }, {
                "type": "multi-string",
                "m_label": "Label:",
-               "m_value": "Screener Utility"
+               "m_value": "Mail Screener Utility"
               }, {
                "type": "string",
                "m_label": "Wrap:",
@@ -554,7 +479,7 @@
              "gbSpan": "1,1",
              "gbPosition": "0,0",
              "m_styles": [],
-             "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxALIGN_CENTER_HORIZONTAL"],
+             "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
              "m_properties": [{
                "type": "winid",
                "m_label": "ID:",
@@ -2032,12 +1957,12 @@
            "m_events": [],
            "m_children": [{
              "m_type": 4449,
-             "proportion": 1,
+             "proportion": 0,
              "border": 5,
              "gbSpan": "1,1",
              "gbPosition": "0,0",
              "m_styles": [],
-             "m_sizerFlags": ["wxTOP", "wxEXPAND"],
+             "m_sizerFlags": ["wxEXPAND"],
              "m_properties": [{
                "type": "string",
                "m_label": "Minimum Size:",
@@ -2045,7 +1970,7 @@
               }, {
                "type": "string",
                "m_label": "Name:",
-               "m_value": "staticBoxSizer65"
+               "m_value": "staticBoxSizerBuild"
               }, {
                "type": "string",
                "m_label": "Style:",
@@ -2067,7 +1992,7 @@
                "border": 5,
                "gbSpan": "1,1",
                "gbPosition": "0,0",
-               "m_styles": ["wxALIGN_LEFT"],
+               "m_styles": ["wxALIGN_CENTRE"],
                "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
                "m_properties": [{
                  "type": "winid",
@@ -2128,7 +2053,7 @@
                 }, {
                  "type": "multi-string",
                  "m_label": "Label:",
-                 "m_value": ""
+                 "m_value": "test"
                 }, {
                  "type": "string",
                  "m_label": "Wrap:",
@@ -2142,7 +2067,7 @@
                "border": 5,
                "gbSpan": "1,1",
                "gbPosition": "0,0",
-               "m_styles": ["wxALIGN_LEFT"],
+               "m_styles": ["wxALIGN_CENTRE"],
                "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
                "m_properties": [{
                  "type": "winid",
@@ -2203,7 +2128,7 @@
                 }, {
                  "type": "multi-string",
                  "m_label": "Label:",
-                 "m_value": ""
+                 "m_value": "text"
                 }, {
                  "type": "string",
                  "m_label": "Wrap:",
@@ -2217,7 +2142,7 @@
                "border": 5,
                "gbSpan": "1,1",
                "gbPosition": "0,0",
-               "m_styles": ["wxALIGN_LEFT"],
+               "m_styles": ["wxALIGN_CENTRE"],
                "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
                "m_properties": [{
                  "type": "winid",
@@ -2278,7 +2203,82 @@
                 }, {
                  "type": "multi-string",
                  "m_label": "Label:",
+                 "m_value": "test"
+                }, {
+                 "type": "string",
+                 "m_label": "Wrap:",
+                 "m_value": "-1"
+                }],
+               "m_events": [],
+               "m_children": []
+              }, {
+               "m_type": 4405,
+               "proportion": 0,
+               "border": 5,
+               "gbSpan": "1,1",
+               "gbPosition": "0,0",
+               "m_styles": [],
+               "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
+               "m_properties": [{
+                 "type": "winid",
+                 "m_label": "ID:",
+                 "m_winid": "wxID_ANY"
+                }, {
+                 "type": "string",
+                 "m_label": "Size:",
+                 "m_value": "-1,-1"
+                }, {
+                 "type": "string",
+                 "m_label": "Minimum Size:",
+                 "m_value": "-1,-1"
+                }, {
+                 "type": "string",
+                 "m_label": "Name:",
+                 "m_value": "m_staticTextCompiler"
+                }, {
+                 "type": "multi-string",
+                 "m_label": "Tooltip:",
                  "m_value": ""
+                }, {
+                 "type": "colour",
+                 "m_label": "Bg Colour:",
+                 "colour": "<Default>"
+                }, {
+                 "type": "colour",
+                 "m_label": "Fg Colour:",
+                 "colour": "<Default>"
+                }, {
+                 "type": "font",
+                 "m_label": "Font:",
+                 "m_value": ""
+                }, {
+                 "type": "bool",
+                 "m_label": "Hidden",
+                 "m_value": false
+                }, {
+                 "type": "bool",
+                 "m_label": "Disabled",
+                 "m_value": false
+                }, {
+                 "type": "bool",
+                 "m_label": "Focused",
+                 "m_value": false
+                }, {
+                 "type": "string",
+                 "m_label": "Class Name:",
+                 "m_value": ""
+                }, {
+                 "type": "string",
+                 "m_label": "Include File:",
+                 "m_value": ""
+                }, {
+                 "type": "string",
+                 "m_label": "Style:",
+                 "m_value": ""
+                }, {
+                 "type": "multi-string",
+                 "m_label": "Label:",
+                 "m_value": "text"
                 }, {
                  "type": "string",
                  "m_label": "Wrap:",
@@ -2289,7 +2289,7 @@
               }]
             }, {
              "m_type": 4449,
-             "proportion": 1,
+             "proportion": 0,
              "border": 5,
              "gbSpan": "1,1",
              "gbPosition": "0,0",
@@ -2385,7 +2385,7 @@
                 }, {
                  "type": "multi-string",
                  "m_label": "Label:",
-                 "m_value": ""
+                 "m_value": "test"
                 }, {
                  "type": "string",
                  "m_label": "Wrap:",
@@ -2400,7 +2400,7 @@
                "gbSpan": "1,1",
                "gbPosition": "0,0",
                "m_styles": [],
-               "m_sizerFlags": ["wxALL", "wxLEFT", "wxRIGHT", "wxTOP", "wxBOTTOM", "wxALIGN_CENTER_HORIZONTAL"],
+               "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
                "m_properties": [{
                  "type": "winid",
                  "m_label": "ID:",
@@ -2460,7 +2460,7 @@
                 }, {
                  "type": "multi-string",
                  "m_label": "Label:",
-                 "m_value": ""
+                 "m_value": "text"
                 }, {
                  "type": "string",
                  "m_label": "Wrap:",
@@ -2471,7 +2471,7 @@
               }]
             }, {
              "m_type": 4449,
-             "proportion": 1,
+             "proportion": 0,
              "border": 5,
              "gbSpan": "1,1",
              "gbPosition": "0,0",
@@ -2507,7 +2507,7 @@
                "gbSpan": "1,1",
                "gbPosition": "0,0",
                "m_styles": ["wxALIGN_CENTRE"],
-               "m_sizerFlags": ["wxALIGN_CENTER_HORIZONTAL"],
+               "m_sizerFlags": ["wxTOP", "wxBOTTOM", "wxALIGN_CENTER_HORIZONTAL"],
                "m_properties": [{
                  "type": "winid",
                  "m_label": "ID:",
@@ -2567,7 +2567,7 @@
                 }, {
                  "type": "multi-string",
                  "m_label": "Label:",
-                 "m_value": ""
+                 "m_value": "test text"
                 }, {
                  "type": "string",
                  "m_label": "Wrap:",

@@ -36,9 +36,9 @@ wxMsAboutDlgBase::wxMsAboutDlgBase(wxWindow* parent, wxWindowID id, const wxStri
     
     m_staticBitmapAbout = new wxStaticBitmap(this, wxID_STATIC, wxXmlResource::Get()->LoadBitmap(wxT("wxMS-1")), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0 );
     
-    boxSizer113->Add(m_staticBitmapAbout, 0, wxALL|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(5));
+    boxSizer113->Add(m_staticBitmapAbout, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, WXC_FROM_DIP(5));
     
-    boxSizer113->Add(0, 0, 1, wxALL, WXC_FROM_DIP(5));
+    boxSizer113->Add(0, 0, 1, 0, WXC_FROM_DIP(5));
     
     wxBoxSizer* boxSizer11 = new wxBoxSizer(wxVERTICAL);
     
@@ -48,19 +48,15 @@ wxMsAboutDlgBase::wxMsAboutDlgBase(wxWindow* parent, wxWindowID id, const wxStri
     wxFont m_staticTextProgNameFont(14, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Tahoma"));
     m_staticTextProgName->SetFont(m_staticTextProgNameFont);
     
-    boxSizer11->Add(m_staticTextProgName, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    boxSizer11->Add(m_staticTextProgName, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
-    m_staticTextAppNameLine1 = new wxStaticText(this, wxID_ANY, _("wxWidgets Based Mail"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
+    m_staticTextAppNameLine2 = new wxStaticText(this, wxID_ANY, _("Mail Screener Utility"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
-    boxSizer11->Add(m_staticTextAppNameLine1, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
-    
-    m_staticTextAppNameLine2 = new wxStaticText(this, wxID_ANY, _("Screener Utility"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
-    
-    boxSizer11->Add(m_staticTextAppNameLine2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    boxSizer11->Add(m_staticTextAppNameLine2, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
     m_staticTextCopyright = new wxStaticText(this, wxID_ANY, _("Copyright: A. Wiegert  %c %s"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
-    boxSizer11->Add(m_staticTextCopyright, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    boxSizer11->Add(m_staticTextCopyright, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
     m_staticTextVersion = new wxStaticText(this, wxID_ANY, _("Version:"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(-1,-1)), 0);
     
@@ -146,41 +142,45 @@ wxMsAboutDlgBase::wxMsAboutDlgBase(wxWindow* parent, wxWindowID id, const wxStri
     wxBoxSizer* boxSizer63 = new wxBoxSizer(wxVERTICAL);
     m_panelSystemInfo->SetSizer(boxSizer63);
     
-    wxStaticBoxSizer* staticBoxSizer65 = new wxStaticBoxSizer( new wxStaticBox(m_panelSystemInfo, wxID_ANY, _("Build Information")), wxVERTICAL);
+    wxStaticBoxSizer* staticBoxSizerBuild = new wxStaticBoxSizer( new wxStaticBox(m_panelSystemInfo, wxID_ANY, _("Build Information")), wxVERTICAL);
     
-    boxSizer63->Add(staticBoxSizer65, 1, wxTOP|wxEXPAND, WXC_FROM_DIP(5));
+    boxSizer63->Add(staticBoxSizerBuild, 0, wxEXPAND, WXC_FROM_DIP(5));
     
-    m_staticTextwxWidgetsVersion = new wxStaticText(m_panelSystemInfo, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_LEFT);
+    m_staticTextwxWidgetsVersion = new wxStaticText(m_panelSystemInfo, wxID_ANY, _("test"), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_CENTRE);
     
-    staticBoxSizer65->Add(m_staticTextwxWidgetsVersion, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    staticBoxSizerBuild->Add(m_staticTextwxWidgetsVersion, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
-    m_staticTextLibcurlVersion = new wxStaticText(m_panelSystemInfo, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_LEFT);
+    m_staticTextLibcurlVersion = new wxStaticText(m_panelSystemInfo, wxID_ANY, _("text"), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_CENTRE);
     
-    staticBoxSizer65->Add(m_staticTextLibcurlVersion, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    staticBoxSizerBuild->Add(m_staticTextLibcurlVersion, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
-    m_staticTextMimeticVersion = new wxStaticText(m_panelSystemInfo, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_LEFT);
+    m_staticTextMimeticVersion = new wxStaticText(m_panelSystemInfo, wxID_ANY, _("test"), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_CENTRE);
     
-    staticBoxSizer65->Add(m_staticTextMimeticVersion, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    staticBoxSizerBuild->Add(m_staticTextMimeticVersion, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    
+    m_staticTextCompiler = new wxStaticText(m_panelSystemInfo, wxID_ANY, _("text"), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), 0);
+    
+    staticBoxSizerBuild->Add(m_staticTextCompiler, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
     wxStaticBoxSizer* staticBoxSizerOS = new wxStaticBoxSizer( new wxStaticBox(m_panelSystemInfo, wxID_ANY, _("System details")), wxVERTICAL);
     
-    boxSizer63->Add(staticBoxSizerOS, 1, wxEXPAND, WXC_FROM_DIP(5));
+    boxSizer63->Add(staticBoxSizerOS, 0, wxEXPAND, WXC_FROM_DIP(5));
     
-    m_staticTextOS = new wxStaticText(m_panelSystemInfo, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), 0);
+    m_staticTextOS = new wxStaticText(m_panelSystemInfo, wxID_ANY, _("test"), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), 0);
     
     staticBoxSizerOS->Add(m_staticTextOS, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
-    m_staticTextOsPort = new wxStaticText(m_panelSystemInfo, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), 0);
+    m_staticTextOsPort = new wxStaticText(m_panelSystemInfo, wxID_ANY, _("text"), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), 0);
     
-    staticBoxSizerOS->Add(m_staticTextOsPort, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    staticBoxSizerOS->Add(m_staticTextOsPort, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
     wxStaticBoxSizer* staticBoxSizerConfigDir = new wxStaticBoxSizer( new wxStaticBox(m_panelSystemInfo, wxID_ANY, _("Configuration file")), wxVERTICAL);
     
-    boxSizer63->Add(staticBoxSizerConfigDir, 1, wxEXPAND, WXC_FROM_DIP(5));
+    boxSizer63->Add(staticBoxSizerConfigDir, 0, wxEXPAND, WXC_FROM_DIP(5));
     
-    m_staticTextConfigDir = new wxStaticText(m_panelSystemInfo, wxID_ANY, wxT(""), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_CENTRE);
+    m_staticTextConfigDir = new wxStaticText(m_panelSystemInfo, wxID_ANY, _("test text"), wxDefaultPosition, wxDLG_UNIT(m_panelSystemInfo, wxSize(-1,-1)), wxALIGN_CENTRE);
     
-    staticBoxSizerConfigDir->Add(m_staticTextConfigDir, 0, wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
+    staticBoxSizerConfigDir->Add(m_staticTextConfigDir, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL, WXC_FROM_DIP(5));
     
     wxBoxSizer* boxSizer121 = new wxBoxSizer(wxHORIZONTAL);
     
